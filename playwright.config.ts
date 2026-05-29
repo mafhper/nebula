@@ -4,6 +4,7 @@ export default defineConfig({
   testDir: './tests',
   outputDir: './output/playwright/results',
   reporter: [['list']],
+  workers: process.env.CI ? 1 : undefined,
   use: {
     baseURL: 'http://127.0.0.1:5173/nebula/',
     trace: 'retain-on-failure',

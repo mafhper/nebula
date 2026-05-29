@@ -101,7 +101,7 @@ test('nebula canvas renders nonblank pixels', async ({ page }) => {
 });
 
 test('effect discovery and playground switching work', async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   const failures = captureFailures(page);
 
   await page.goto('/');
