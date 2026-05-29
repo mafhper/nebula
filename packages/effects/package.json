@@ -1,0 +1,20 @@
+{
+  "name": "@nebula/effects",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest --run --passWithNoTests",
+    "clean": "pwsh -NoProfile -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }\""
+  },
+  "peerDependencies": {
+    "@react-three/fiber": ">=9.0.0",
+    "react": ">=19.0.0",
+    "three": ">=0.184.0"
+  }
+}

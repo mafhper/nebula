@@ -1,0 +1,41 @@
+{
+  "name": "nebula",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.12.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @nebula/web -- --port 5173",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:visual": "playwright test",
+    "build": "turbo run build",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.60.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "turbo": "^2.6.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.48.1",
+    "vite": "^8.0.14",
+    "vite-plugin-glsl": "^1.5.1",
+    "vitest": "^4.0.15"
+  }
+}

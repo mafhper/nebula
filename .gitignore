@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+**/dist/
+coverage/
+output/
+test-results/
+*.tsbuildinfo
+.turbo/
+.vite/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Agent/private workspaces
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+QWEN.md
+KIMI.md
+.codex/
+.dev/
+_dev/
+.agents/
+.gemini/
+.gemini-clipboard/
+.claude/
+.qwen/
+.kimi/
+.roo/
+.cursor/
+.windsurf/
+.claude-code/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.log
