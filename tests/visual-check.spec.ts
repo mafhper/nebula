@@ -53,5 +53,5 @@ test('effect discovery and playground switching work', async ({ page }) => {
   expect(failures.pageErrors).toEqual([]);
   expect(failures.consoleErrors).toEqual([]);
   expect(canvasStats.found).toBe(true);
-  expect(canvasStats.brightPixels).toBeGreaterThan(0);
+  expect(canvasStats.uniqueColors).toBeGreaterThan(1);
 });

@@ -14,6 +14,7 @@ export function WavePlaneEffect({
   amplitude = 0.28,
   frequency = 1.2,
   complexity = 3,
+  intensity = 1,
 }: WavePlaneEffectProps) {
   const materialRef = useRef<ShaderMaterial>(null);
   const uniforms = useMemo<WavePlaneUniforms>(
@@ -26,8 +27,9 @@ export function WavePlaneEffect({
       uAmplitude: { value: amplitude },
       uFrequency: { value: frequency },
       uComplexity: { value: complexity },
+      uIntensity: { value: intensity },
     }),
-    [amplitude, color1, color2, color3, complexity, frequency, speed],
+    [amplitude, color1, color2, color3, complexity, frequency, intensity, speed],
   );
 
   useFrame((_state, delta) => {
