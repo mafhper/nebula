@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { captureFailures, readCanvasStats } from './visual-check.spec';
+import { captureFailures, readCanvasStats } from './visual-helpers';
 
 const effects = [
   { id: 'aurora', label: 'Aurora', preset: 'Dusk' },
