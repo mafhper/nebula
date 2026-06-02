@@ -18,15 +18,22 @@ export function DeveloperHandOff({ effectIds }: DeveloperHandOffProps) {
 
       <div className="developer-grid">
         <div className="install-panel">
-          <p>Usage</p>
+          <p>Usage now</p>
           <pre>{`import { AuroraEffect } from '@nebula/effects/aurora';
 
 <Canvas>
   <AuroraEffect speed={0.32} intensity={1.08} />
 </Canvas>`}</pre>
-          <span>
-            Package publishing is intentionally not promised before versioning is decided.
-          </span>
+          <span>Examples currently point at the workspace package shape used by the demo.</span>
+
+          <div className="npm-plan" aria-label="Planned npm package">
+            <span>Future package</span>
+            <strong>@nebula/effects</strong>
+            <p>
+              The project is being shaped to become an npm package after the API, presets,
+              versioning and release gates are stable enough for external use.
+            </p>
+          </div>
         </div>
 
         <div className="developer-notes">

@@ -26,8 +26,11 @@ export function PerformanceMetrics() {
   });
 
   return (
-    <Html position={[0, 0, 0]} zIndexRange={[100, 0]} wrapperClass="performance-metrics">
-      <span>{fps} FPS</span>
+    <Html fullscreen zIndexRange={[100, 0]} wrapperClass="performance-metrics">
+      <span className="performance-badge" aria-label={`Current frame rate ${fps} FPS`}>
+        <span>FPS</span>
+        <strong>{fps}</strong>
+      </span>
     </Html>
   );
 }
