@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Color, ShaderMaterial } from 'three';
 import fragmentShader from './fragment.glsl';
 import type { StarfieldEffectProps, StarfieldUniforms } from './types';
@@ -48,6 +48,12 @@ export function StarfieldEffect({
   const materialRef = useRef<ShaderMaterial>(null);
   const count = Math.max(100, Math.round(density));
   const geometry = useMemo(() => createGeometry(count, depth), [count, depth]);
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+    };
+  }, [geometry]);
   const uniforms = useMemo<StarfieldUniforms>(
     () => ({
       uTime: { value: 0 },
