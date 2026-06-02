@@ -1,22 +1,14 @@
 import {
-  AuroraEffect,
   auroraPresets,
-  FluidGradientEffect,
   fluidGradientPresets,
-  GeometricEffect,
   geometricPresets,
-  ParticleGalaxyEffect,
   particleGalaxyPresets,
-  PlasmaEffect,
   plasmaPresets,
-  StarfieldEffect,
   starfieldPresets,
-  VortexEffect,
   vortexPresets,
-  WavePlaneEffect,
   wavePlanePresets,
 } from '@nebula/effects';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ControlPanel } from './components/ControlPanel';
 import { DeveloperHandOff } from './components/DeveloperHandOff';
@@ -68,16 +60,29 @@ const presetConfig: Record<
   'wave-plane': { ids: wavePlanePresetIds, presets: wavePlanePresets, swatch: 'linear' },
 };
 
-const effectComponents = {
-  aurora: AuroraEffect,
-  'fluid-gradient': FluidGradientEffect,
-  geometric: GeometricEffect,
-  'particle-galaxy': ParticleGalaxyEffect,
-  plasma: PlasmaEffect,
-  starfield: StarfieldEffect,
-  vortex: VortexEffect,
-  'wave-plane': WavePlaneEffect,
-} as const;
+const effectComponents: Record<
+  string,
+  React.LazyExoticComponent<React.ComponentType<Record<string, unknown>>>
+> = {
+  aurora: lazy(() => import('@nebula/effects/aurora').then((m) => ({ default: m.AuroraEffect }))),
+  'fluid-gradient': lazy(() =>
+    import('@nebula/effects/fluid-gradient').then((m) => ({ default: m.FluidGradientEffect })),
+  ),
+  geometric: lazy(() =>
+    import('@nebula/effects/geometric').then((m) => ({ default: m.GeometricEffect })),
+  ),
+  'particle-galaxy': lazy(() =>
+    import('@nebula/effects/particle-galaxy').then((m) => ({ default: m.ParticleGalaxyEffect })),
+  ),
+  plasma: lazy(() => import('@nebula/effects/plasma').then((m) => ({ default: m.PlasmaEffect }))),
+  starfield: lazy(() =>
+    import('@nebula/effects/starfield').then((m) => ({ default: m.StarfieldEffect })),
+  ),
+  vortex: lazy(() => import('@nebula/effects/vortex').then((m) => ({ default: m.VortexEffect }))),
+  'wave-plane': lazy(() =>
+    import('@nebula/effects/wave-plane').then((m) => ({ default: m.WavePlaneEffect })),
+  ),
+};
 
 type ControlConfig = ReadonlyArray<{
   label: string;
@@ -248,10 +253,10 @@ export function App() {
   const activePreset = presetConfig[selectedEffect].presets[current.preset];
   const EffectComponent = effectComponents[selectedEffect];
   const activeVisual = (
-    <>
+    <Suspense fallback={null}>
       <EffectComponent {...current.settings} />
       {showMetrics && <PerformanceMetrics />}
-    </>
+    </Suspense>
   );
 
   const snippet = useMemo(() => {
