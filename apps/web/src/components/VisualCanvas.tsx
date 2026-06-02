@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense, type ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 
 interface VisualCanvasProps {
   children: ReactNode;

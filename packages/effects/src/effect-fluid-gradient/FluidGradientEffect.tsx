@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import { AdditiveBlending, Color, DoubleSide, ShaderMaterial } from 'three';
+
 import fragmentShader from './fragment.glsl';
 import type { FluidGradientEffectProps, FluidGradientUniforms } from './types';
 import vertexShader from './vertex.glsl';

@@ -1,10 +1,10 @@
 import {
-  auroraPresets,
-  fluidGradientPresets,
-  starfieldPresets,
   type AuroraPresetId,
+  auroraPresets,
   type FluidGradientPresetId,
+  fluidGradientPresets,
   type StarfieldPresetId,
+  starfieldPresets,
 } from '@nebula/effects';
 
 export type EffectId = 'aurora' | 'fluid-gradient' | 'starfield';

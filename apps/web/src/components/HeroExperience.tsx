@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { effectRegistry, type EffectId, type EffectMeta } from '../effectRegistry';
+
+import { type EffectId, type EffectMeta, effectRegistry } from '../effectRegistry';
 
 interface HeroExperienceProps {
   activeEffect: EffectMeta;
