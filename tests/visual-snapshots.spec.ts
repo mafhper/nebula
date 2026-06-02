@@ -3,15 +3,15 @@ import { expect, test } from '@playwright/test';
 import { captureFailures, readCanvasStats } from './visual-helpers';
 
 const effects = [
-  { id: 'aurora', label: 'Aurora', preset: 'Dusk' },
-  { id: 'fluid-gradient', label: 'Fluid', preset: 'Ember' },
-  { id: 'particle-galaxy', label: 'Galaxy', preset: 'Nebula' },
-  { id: 'starfield', label: 'Stars', preset: 'Cruise' },
-  { id: 'vortex', label: 'Vortex', preset: 'Whirlpool' },
-  { id: 'wave-plane', label: 'Waves', preset: 'Ocean' },
-  { id: 'plasma', label: 'Plasma', preset: 'Nebula' },
-  { id: 'geometric', label: 'Geo', preset: 'Nebula Knot' },
-  { id: 'lava-lamp', label: 'Lava', preset: 'Retro' },
+  { id: 'aurora', label: 'Aurora Field', preset: 'Dusk' },
+  { id: 'fluid-gradient', label: 'Fluid Gradient', preset: 'Ember' },
+  { id: 'particle-galaxy', label: 'Particle Galaxy', preset: 'Nebula' },
+  { id: 'starfield', label: 'Starfield 3D', preset: 'Cruise' },
+  { id: 'vortex', label: 'Spiral Vortex', preset: 'Whirlpool' },
+  { id: 'wave-plane', label: 'Wave Plane', preset: 'Ocean' },
+  { id: 'plasma', label: 'Plasma Field', preset: 'Nebula' },
+  { id: 'geometric', label: 'Geometric Shape', preset: 'Nebula Knot' },
+  { id: 'lava-lamp', label: 'Lava Lamp', preset: 'Retro' },
 ] as const;
 
 async function waitForNonblankCanvas(page: import('@playwright/test').Page, retries = 3) {
@@ -52,12 +52,7 @@ test.describe('visual snapshots', () => {
       await page.waitForTimeout(1500);
 
       const playground = page.locator('#playground');
-      const tab = playground.getByRole('button', { name: new RegExp(effect.label, 'i') });
-
-      if (await tab.isVisible()) {
-        await tab.click();
-        await page.waitForTimeout(1500);
-      }
+      await playground.locator('.effect-select').selectOption(effect.id);
 
       const canvasDone = page.locator('.nebula-canvas').first();
       await expect(canvasDone).toBeAttached({ timeout: 10_000 });
