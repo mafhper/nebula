@@ -1,4 +1,4 @@
-import { effectRegistry, type EffectId } from '../effectRegistry';
+import { type EffectId, effectRegistry } from '../effectRegistry';
 
 interface DeveloperHandOffProps {
   effectIds: EffectId[];

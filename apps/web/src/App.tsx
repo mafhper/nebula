@@ -1,18 +1,19 @@
-import { useMemo, useState } from 'react';
 import {
   AuroraEffect,
-  FluidGradientEffect,
-  StarfieldEffect,
-  auroraPresets,
-  fluidGradientPresets,
-  starfieldPresets,
   type AuroraEffectProps,
   type AuroraPresetId,
+  auroraPresets,
+  FluidGradientEffect,
   type FluidGradientEffectProps,
   type FluidGradientPresetId,
+  fluidGradientPresets,
+  StarfieldEffect,
   type StarfieldEffectProps,
   type StarfieldPresetId,
+  starfieldPresets,
 } from '@nebula/effects';
+import { useCallback, useMemo, useState } from 'react';
+
 import { ControlPanel } from './components/ControlPanel';
 import { DeveloperHandOff } from './components/DeveloperHandOff';
 import { EffectPlayground } from './components/EffectPlayground';
@@ -23,17 +24,67 @@ import { RangeControl } from './components/RangeControl';
 import { VisualCanvas } from './components/VisualCanvas';
 import {
   auroraPresetIds,
+  type EffectId,
   effectIds,
   effectRegistry,
   fluidPresetIds,
   starfieldPresetIds,
   totalPresetCount,
-  type EffectId,
 } from './effectRegistry';
+
+const presetConfig: Record<
+  EffectId,
+  {
+    ids: readonly string[];
+    presets: Record<
+      string,
+      { color1: string; color2: string; color3?: string; label: string; concept: string }
+    >;
+    swatch: 'linear' | 'radial';
+  }
+> = {
+  aurora: { ids: auroraPresetIds, presets: auroraPresets, swatch: 'linear' },
+  'fluid-gradient': { ids: fluidPresetIds, presets: fluidGradientPresets, swatch: 'linear' },
+  starfield: { ids: starfieldPresetIds, presets: starfieldPresets, swatch: 'radial' },
+};
+
+const effectComponents = {
+  aurora: AuroraEffect,
+  'fluid-gradient': FluidGradientEffect,
+  starfield: StarfieldEffect,
+} as const;
+
+type ControlConfig = ReadonlyArray<{
+  label: string;
+  key: string;
+  min: number;
+  max: number;
+  step: number;
+}>;
+
+const controlConfig: Record<EffectId, ControlConfig> = {
+  aurora: [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 1.8, step: 0.01 },
+    { label: 'Bands', key: 'bandScale', min: 0.4, max: 2.2, step: 0.01 },
+    { label: 'Distortion', key: 'distortion', min: 0, max: 1.2, step: 0.01 },
+  ],
+  'fluid-gradient': [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.2, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 1.8, step: 0.01 },
+    { label: 'Scale', key: 'scale', min: 0.5, max: 2, step: 0.01 },
+    { label: 'Distortion', key: 'distortion', min: 0, max: 1.2, step: 0.01 },
+  ],
+  starfield: [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.2, step: 0.01 },
+    { label: 'Density', key: 'density', min: 300, max: 1800, step: 50 },
+    { label: 'Depth', key: 'depth', min: 8, max: 32, step: 1 },
+    { label: 'Point size', key: 'pointSize', min: 8, max: 28, step: 1 },
+  ],
+};
 
 function auroraToSettings(presetId: AuroraPresetId): Required<AuroraEffectProps> {
   const preset = auroraPresets[presetId];
-
   return {
     color1: preset.color1,
     color2: preset.color2,
@@ -48,7 +99,6 @@ function auroraToSettings(presetId: AuroraPresetId): Required<AuroraEffectProps>
 
 function fluidToSettings(presetId: FluidGradientPresetId): Required<FluidGradientEffectProps> {
   const preset = fluidGradientPresets[presetId];
-
   return {
     color1: preset.color1,
     color2: preset.color2,
@@ -63,7 +113,6 @@ function fluidToSettings(presetId: FluidGradientPresetId): Required<FluidGradien
 
 function starfieldToSettings(presetId: StarfieldPresetId): Required<StarfieldEffectProps> {
   const preset = starfieldPresets[presetId];
-
   return {
     color1: preset.color1,
     color2: preset.color2,
@@ -76,76 +125,80 @@ function starfieldToSettings(presetId: StarfieldPresetId): Required<StarfieldEff
   };
 }
 
+type EffectState = {
+  preset: AuroraPresetId | FluidGradientPresetId | StarfieldPresetId;
+  settings: Required<AuroraEffectProps | FluidGradientEffectProps | StarfieldEffectProps>;
+};
+
+function initialEffectsState(): Record<EffectId, EffectState> {
+  return {
+    aurora: { preset: 'polar' as const, settings: auroraToSettings('polar') },
+    'fluid-gradient': { preset: 'prism' as const, settings: fluidToSettings('prism') },
+    starfield: { preset: 'cruise' as const, settings: starfieldToSettings('cruise') },
+  };
+}
+
 export function App() {
   const [selectedEffect, setSelectedEffect] = useState<EffectId>('aurora');
-  const [auroraPreset, setAuroraPreset] = useState<AuroraPresetId>('polar');
-  const [fluidPreset, setFluidPreset] = useState<FluidGradientPresetId>('prism');
-  const [starfieldPreset, setStarfieldPreset] = useState<StarfieldPresetId>('cruise');
-  const [auroraSettings, setAuroraSettings] = useState<Required<AuroraEffectProps>>(() =>
-    auroraToSettings('polar'),
+  const [effects, setEffects] = useState(initialEffectsState);
+
+  const current = effects[selectedEffect];
+
+  const setCurrentPreset = useCallback(
+    (presetId: string) => {
+      const id = selectedEffect;
+      const toSettings =
+        id === 'aurora'
+          ? auroraToSettings
+          : id === 'fluid-gradient'
+            ? fluidToSettings
+            : starfieldToSettings;
+
+      setEffects((prev) => ({
+        ...prev,
+        [id]: { preset: presetId as never, settings: toSettings(presetId as never) },
+      }));
+    },
+    [selectedEffect],
   );
-  const [fluidSettings, setFluidSettings] = useState<Required<FluidGradientEffectProps>>(() =>
-    fluidToSettings('prism'),
-  );
-  const [starfieldSettings, setStarfieldSettings] = useState<Required<StarfieldEffectProps>>(() =>
-    starfieldToSettings('cruise'),
+
+  const setCurrentSetting = useCallback(
+    <K extends string>(key: K, value: number) => {
+      setEffects((prev) => ({
+        ...prev,
+        [selectedEffect]: {
+          ...prev[selectedEffect],
+          settings: { ...prev[selectedEffect].settings, [key]: value },
+        },
+      }));
+    },
+    [selectedEffect],
   );
 
   const activeEffect = effectRegistry[selectedEffect];
-  const activePreset = getActivePreset();
-  const activeVisual = renderEffect();
+  const activePreset = presetConfig[selectedEffect].presets[current.preset];
+  const EffectComponent = effectComponents[selectedEffect];
+  const activeVisual = (
+    <EffectComponent {...(current.settings as unknown as Record<string, unknown>)} />
+  );
 
   const snippet = useMemo(() => {
+    const s = current.settings;
+    const p = current.preset;
+
     if (selectedEffect === 'fluid-gradient') {
-      return `<FluidGradientEffect preset="${fluidPreset}" color1="${fluidSettings.color1}" color2="${fluidSettings.color2}" speed={${fluidSettings.speed.toFixed(2)}} intensity={${fluidSettings.intensity.toFixed(2)}} />`;
+      const fs = s as Required<FluidGradientEffectProps>;
+      return `<FluidGradientEffect preset="${p}" color1="${fs.color1}" color2="${fs.color2}" speed={${fs.speed.toFixed(2)}} intensity={${fs.intensity.toFixed(2)}} />`;
     }
 
     if (selectedEffect === 'starfield') {
-      return `<StarfieldEffect preset="${starfieldPreset}" density={${starfieldSettings.density}} speed={${starfieldSettings.speed.toFixed(2)}} pointSize={${starfieldSettings.pointSize}} />`;
+      const ss = s as Required<StarfieldEffectProps>;
+      return `<StarfieldEffect preset="${p}" density={${ss.density}} speed={${ss.speed.toFixed(2)}} pointSize={${ss.pointSize}} />`;
     }
 
-    return `<AuroraEffect preset="${auroraPreset}" color1="${auroraSettings.color1}" color2="${auroraSettings.color2}" speed={${auroraSettings.speed.toFixed(2)}} intensity={${auroraSettings.intensity.toFixed(2)}} />`;
-  }, [
-    auroraPreset,
-    auroraSettings.color1,
-    auroraSettings.color2,
-    auroraSettings.intensity,
-    auroraSettings.speed,
-    fluidPreset,
-    fluidSettings.color1,
-    fluidSettings.color2,
-    fluidSettings.intensity,
-    fluidSettings.speed,
-    selectedEffect,
-    starfieldPreset,
-    starfieldSettings.density,
-    starfieldSettings.pointSize,
-    starfieldSettings.speed,
-  ]);
-
-  function getActivePreset() {
-    if (selectedEffect === 'fluid-gradient') {
-      return fluidGradientPresets[fluidPreset];
-    }
-
-    if (selectedEffect === 'starfield') {
-      return starfieldPresets[starfieldPreset];
-    }
-
-    return auroraPresets[auroraPreset];
-  }
-
-  function renderEffect() {
-    if (selectedEffect === 'fluid-gradient') {
-      return <FluidGradientEffect {...fluidSettings} />;
-    }
-
-    if (selectedEffect === 'starfield') {
-      return <StarfieldEffect {...starfieldSettings} />;
-    }
-
-    return <AuroraEffect {...auroraSettings} />;
-  }
+    const as = s as Required<AuroraEffectProps>;
+    return `<AuroraEffect preset="${p}" color1="${as.color1}" color2="${as.color2}" speed={${as.speed.toFixed(2)}} intensity={${as.intensity.toFixed(2)}} />`;
+  }, [current, selectedEffect]);
 
   function renderEffectTabs() {
     return (
@@ -170,79 +223,28 @@ export function App() {
   }
 
   function renderPresetGrid() {
-    if (selectedEffect === 'fluid-gradient') {
-      return fluidPresetIds.map((presetId) => {
-        const preset = fluidGradientPresets[presetId];
+    const config = presetConfig[selectedEffect];
+    const effectPresets = config.presets;
 
-        return (
-          <button
-            key={presetId}
-            type="button"
-            className="preset-button"
-            aria-pressed={presetId === fluidPreset}
-            onClick={() => {
-              setFluidPreset(presetId);
-              setFluidSettings(fluidToSettings(presetId));
-            }}
-          >
-            <span
-              className="preset-swatch"
-              style={{
-                background: `linear-gradient(135deg, ${preset.color1}, ${preset.color2} 55%, ${preset.color3})`,
-              }}
-            />
-            <span>{preset.label}</span>
-          </button>
-        );
-      });
-    }
-
-    if (selectedEffect === 'starfield') {
-      return starfieldPresetIds.map((presetId) => {
-        const preset = starfieldPresets[presetId];
-
-        return (
-          <button
-            key={presetId}
-            type="button"
-            className="preset-button"
-            aria-pressed={presetId === starfieldPreset}
-            onClick={() => {
-              setStarfieldPreset(presetId);
-              setStarfieldSettings(starfieldToSettings(presetId));
-            }}
-          >
-            <span
-              className="preset-swatch star-swatch"
-              style={{
-                background: `radial-gradient(circle, ${preset.color1}, ${preset.color2} 42%, transparent 72%)`,
-              }}
-            />
-            <span>{preset.label}</span>
-          </button>
-        );
-      });
-    }
-
-    return auroraPresetIds.map((presetId) => {
-      const preset = auroraPresets[presetId];
+    return config.ids.map((presetId) => {
+      const preset = effectPresets[presetId];
+      const isActive = presetId === current.preset;
+      const background =
+        config.swatch === 'radial'
+          ? `radial-gradient(circle, ${preset.color1}, ${preset.color2} 42%, transparent 72%)`
+          : `linear-gradient(135deg, ${preset.color1}, ${preset.color2} 55%, ${preset.color3 ?? preset.color1})`;
 
       return (
         <button
           key={presetId}
           type="button"
           className="preset-button"
-          aria-pressed={presetId === auroraPreset}
-          onClick={() => {
-            setAuroraPreset(presetId);
-            setAuroraSettings(auroraToSettings(presetId));
-          }}
+          aria-pressed={isActive}
+          onClick={() => setCurrentPreset(presetId)}
         >
           <span
-            className="preset-swatch"
-            style={{
-              background: `linear-gradient(135deg, ${preset.color1}, ${preset.color2} 55%, ${preset.color3})`,
-            }}
+            className={`preset-swatch${config.swatch === 'radial' ? ' star-swatch' : ''}`}
+            style={{ background }}
           />
           <span>{preset.label}</span>
         </button>
@@ -251,122 +253,22 @@ export function App() {
   }
 
   function renderControls() {
-    if (selectedEffect === 'fluid-gradient') {
-      return (
-        <ControlPanel label="Fluid Gradient controls">
-          <RangeControl
-            label="Speed"
-            min={0}
-            max={1.2}
-            step={0.01}
-            value={fluidSettings.speed}
-            onChange={(value) => setFluidSettings((current) => ({ ...current, speed: value }))}
-          />
-          <RangeControl
-            label="Intensity"
-            min={0}
-            max={1.8}
-            step={0.01}
-            value={fluidSettings.intensity}
-            onChange={(value) => setFluidSettings((current) => ({ ...current, intensity: value }))}
-          />
-          <RangeControl
-            label="Scale"
-            min={0.5}
-            max={2}
-            step={0.01}
-            value={fluidSettings.scale}
-            onChange={(value) => setFluidSettings((current) => ({ ...current, scale: value }))}
-          />
-          <RangeControl
-            label="Distortion"
-            min={0}
-            max={1.2}
-            step={0.01}
-            value={fluidSettings.distortion}
-            onChange={(value) => setFluidSettings((current) => ({ ...current, distortion: value }))}
-          />
-        </ControlPanel>
-      );
-    }
-
-    if (selectedEffect === 'starfield') {
-      return (
-        <ControlPanel label="Starfield controls">
-          <RangeControl
-            label="Speed"
-            min={0}
-            max={1.2}
-            step={0.01}
-            value={starfieldSettings.speed}
-            onChange={(value) => setStarfieldSettings((current) => ({ ...current, speed: value }))}
-          />
-          <RangeControl
-            label="Density"
-            min={300}
-            max={1800}
-            step={50}
-            value={starfieldSettings.density}
-            onChange={(value) =>
-              setStarfieldSettings((current) => ({ ...current, density: value }))
-            }
-          />
-          <RangeControl
-            label="Depth"
-            min={8}
-            max={32}
-            step={1}
-            value={starfieldSettings.depth}
-            onChange={(value) => setStarfieldSettings((current) => ({ ...current, depth: value }))}
-          />
-          <RangeControl
-            label="Point size"
-            min={8}
-            max={28}
-            step={1}
-            value={starfieldSettings.pointSize}
-            onChange={(value) =>
-              setStarfieldSettings((current) => ({ ...current, pointSize: value }))
-            }
-          />
-        </ControlPanel>
-      );
-    }
+    const controls = controlConfig[selectedEffect];
+    const s = current.settings as unknown as Record<string, number>;
 
     return (
-      <ControlPanel label="Aurora controls">
-        <RangeControl
-          label="Speed"
-          min={0}
-          max={1.5}
-          step={0.01}
-          value={auroraSettings.speed}
-          onChange={(value) => setAuroraSettings((current) => ({ ...current, speed: value }))}
-        />
-        <RangeControl
-          label="Intensity"
-          min={0}
-          max={1.8}
-          step={0.01}
-          value={auroraSettings.intensity}
-          onChange={(value) => setAuroraSettings((current) => ({ ...current, intensity: value }))}
-        />
-        <RangeControl
-          label="Bands"
-          min={0.4}
-          max={2.2}
-          step={0.01}
-          value={auroraSettings.bandScale}
-          onChange={(value) => setAuroraSettings((current) => ({ ...current, bandScale: value }))}
-        />
-        <RangeControl
-          label="Distortion"
-          min={0}
-          max={1.2}
-          step={0.01}
-          value={auroraSettings.distortion}
-          onChange={(value) => setAuroraSettings((current) => ({ ...current, distortion: value }))}
-        />
+      <ControlPanel label={`${activeEffect.label} controls`}>
+        {controls.map(({ label, key, min, max, step }) => (
+          <RangeControl
+            key={key}
+            label={label}
+            min={min}
+            max={max}
+            step={step}
+            value={s[key]}
+            onChange={(value) => setCurrentSetting(key, value)}
+          />
+        ))}
       </ControlPanel>
     );
   }

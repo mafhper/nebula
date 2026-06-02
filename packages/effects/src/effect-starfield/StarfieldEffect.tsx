@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Color, ShaderMaterial } from 'three';
+
 import fragmentShader from './fragment.glsl';
 import type { StarfieldEffectProps, StarfieldUniforms } from './types';
 import vertexShader from './vertex.glsl';

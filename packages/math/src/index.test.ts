@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { clamp, lerp, mapRange } from './index';
 
 describe('math utilities', () => {
