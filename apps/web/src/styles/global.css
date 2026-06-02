@@ -314,7 +314,7 @@ input:focus-visible {
 .effect-search {
   width: 100%;
   padding: 0.5rem 0.7rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   background: transparent;
   color: var(--text);
@@ -696,7 +696,7 @@ input:focus-visible {
 
 .metrics-toggle {
   appearance: none;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   background: transparent;
   color: var(--muted);
   font: inherit;
@@ -739,7 +739,7 @@ input:focus-visible {
   gap: 0.64rem;
 }
 
-.snippet-panel div {
+.snippet-panel > div {
   display: flex;
   align-items: end;
   justify-content: space-between;
@@ -967,14 +967,10 @@ input:focus-visible {
     padding: 2.8rem 0;
   }
 
-  .hero-effect-switcher,
   .effect-switcher {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .hero-effect-switcher,
-  .hero-effect-switcher,
-  .effect-switcher,
   .milestone-grid,
   .architecture-flow {
     grid-template-columns: 1fr;
@@ -985,7 +981,7 @@ input:focus-visible {
     min-height: 20rem;
   }
 
-  .snippet-panel div {
+  .snippet-panel > div:first-child {
     align-items: start;
     flex-direction: column;
     gap: 0.2rem;
