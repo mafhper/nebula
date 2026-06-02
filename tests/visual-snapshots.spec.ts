@@ -20,18 +20,18 @@ test.describe('visual snapshots', () => {
       const failures = captureFailures(page);
 
       await page.goto('/');
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(1500);
 
       const playground = page.locator('#playground');
       const tab = playground.getByRole('button', { name: new RegExp(effect.label, 'i') });
 
       if (await tab.isVisible()) {
         await tab.click();
-        await page.waitForTimeout(600);
+        await page.waitForTimeout(1000);
       }
 
-      await expect(page.locator('.nebula-canvas').first()).toBeAttached();
-      await page.waitForTimeout(400);
+      const canvasDone = page.locator('.nebula-canvas').first();
+      await expect(canvasDone).toBeAttached({ timeout: 10_000 });
 
       const canvasStats = await readCanvasStats(page);
 

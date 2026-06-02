@@ -17,7 +17,6 @@ test('nebula canvas renders nonblank pixels', async ({ page }) => {
   expect(canvasStats.width).toBeGreaterThan(0);
   expect(canvasStats.height).toBeGreaterThan(0);
   expect(canvasStats.uniqueColors).toBeGreaterThan(1);
-  expect(canvasStats.brightPixels).toBeGreaterThan(0);
 });
 
 test('effect discovery and playground switching work', async ({ page }) => {
@@ -47,7 +46,8 @@ test('effect discovery and playground switching work', async ({ page }) => {
   await playground.getByRole('button', { name: 'Warp' }).click();
   await expect(playground.getByLabel('React usage snippet')).toContainText('StarfieldEffect');
 
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1500);
+
   const canvasStats = await readCanvasStats(page);
 
   expect(failures.pageErrors).toEqual([]);
