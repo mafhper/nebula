@@ -10,7 +10,7 @@ export function PerformanceOptimizer({ children }: { children: ReactNode }) {
       const next = document.hidden ? 'never' : 'always';
       if (next !== prevRef.current) {
         prevRef.current = next;
-        set({ frameloop: next, events: { enabled: !document.hidden } });
+        set({ frameloop: next });
       }
     };
 

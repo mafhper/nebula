@@ -19,7 +19,7 @@ export function DeveloperHandOff({ effectIds }: DeveloperHandOffProps) {
       <div className="developer-grid">
         <div className="install-panel">
           <p>Current usage shape</p>
-          <pre>{`import { AuroraEffect } from '@nebula/effects';\n\n<Canvas>\n  <AuroraEffect speed={0.32} intensity={1.08} />\n</Canvas>`}</pre>
+          <pre>{`import { AuroraEffect } from '@nebula/effects/aurora';\n\n<Canvas>\n  <AuroraEffect speed={0.32} intensity={1.08} />\n</Canvas>`}</pre>
           <span>
             Package publishing is intentionally not promised before versioning is decided.
           </span>
