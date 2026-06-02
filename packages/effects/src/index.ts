@@ -1,10 +1,14 @@
-export { AuroraEffect } from './effect-aurora/AuroraEffect';
+// Preset data and controls are exported from the main barrel.
+// Effect components are imported via subpath exports for code-splitting, e.g.:
+//   lazy(() => import('@nebula/effects/aurora'))
+//
+// See the exports map in package.json for available subpaths.
+
 export { auroraControls } from './effect-aurora/controls';
 export type { AuroraPresetId } from './effect-aurora/presets';
 export { auroraPresets } from './effect-aurora/presets';
 export type { AuroraEffectProps, AuroraPreset, AuroraUniforms } from './effect-aurora/types';
 export { fluidGradientControls } from './effect-fluid-gradient/controls';
-export { FluidGradientEffect } from './effect-fluid-gradient/FluidGradientEffect';
 export type { FluidGradientPresetId } from './effect-fluid-gradient/presets';
 export { fluidGradientPresets } from './effect-fluid-gradient/presets';
 export type {
@@ -13,7 +17,6 @@ export type {
   FluidGradientUniforms,
 } from './effect-fluid-gradient/types';
 export { geometricControls } from './effect-geometric/controls';
-export { GeometricEffect } from './effect-geometric/GeometricEffect';
 export type { GeometricPresetId } from './effect-geometric/presets';
 export { geometricPresets } from './effect-geometric/presets';
 export type {
@@ -23,7 +26,6 @@ export type {
   GeometricUniforms,
 } from './effect-geometric/types';
 export { particleGalaxyControls } from './effect-particle-galaxy/controls';
-export { ParticleGalaxyEffect } from './effect-particle-galaxy/ParticleGalaxyEffect';
 export type { ParticleGalaxyPresetId } from './effect-particle-galaxy/presets';
 export { particleGalaxyPresets } from './effect-particle-galaxy/presets';
 export type {
@@ -32,14 +34,12 @@ export type {
   ParticleGalaxyUniforms,
 } from './effect-particle-galaxy/types';
 export { plasmaControls } from './effect-plasma/controls';
-export { PlasmaEffect } from './effect-plasma/PlasmaEffect';
 export type { PlasmaPresetId } from './effect-plasma/presets';
 export { plasmaPresets } from './effect-plasma/presets';
 export type { PlasmaEffectProps, PlasmaPreset, PlasmaUniforms } from './effect-plasma/types';
 export { starfieldControls } from './effect-starfield/controls';
 export type { StarfieldPresetId } from './effect-starfield/presets';
 export { starfieldPresets } from './effect-starfield/presets';
-export { StarfieldEffect } from './effect-starfield/StarfieldEffect';
 export type {
   StarfieldEffectProps,
   StarfieldPreset,
@@ -49,7 +49,6 @@ export { vortexControls } from './effect-vortex/controls';
 export type { VortexPresetId } from './effect-vortex/presets';
 export { vortexPresets } from './effect-vortex/presets';
 export type { VortexEffectProps, VortexPreset, VortexUniforms } from './effect-vortex/types';
-export { VortexEffect } from './effect-vortex/VortexEffect';
 export { wavePlaneControls } from './effect-wave-plane/controls';
 export type { WavePlanePresetId } from './effect-wave-plane/presets';
 export { wavePlanePresets } from './effect-wave-plane/presets';
@@ -58,4 +57,3 @@ export type {
   WavePlanePreset,
   WavePlaneUniforms,
 } from './effect-wave-plane/types';
-export { WavePlaneEffect } from './effect-wave-plane/WavePlaneEffect';
