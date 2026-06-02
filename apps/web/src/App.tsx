@@ -7,6 +7,10 @@ import {
   type FluidGradientEffectProps,
   type FluidGradientPresetId,
   fluidGradientPresets,
+  ParticleGalaxyEffect,
+  type ParticleGalaxyEffectProps,
+  type ParticleGalaxyPresetId,
+  particleGalaxyPresets,
   StarfieldEffect,
   type StarfieldEffectProps,
   type StarfieldPresetId,
@@ -28,6 +32,7 @@ import {
   effectIds,
   effectRegistry,
   fluidPresetIds,
+  particleGalaxyPresetIds,
   starfieldPresetIds,
   totalPresetCount,
 } from './effectRegistry';
@@ -45,12 +50,18 @@ const presetConfig: Record<
 > = {
   aurora: { ids: auroraPresetIds, presets: auroraPresets, swatch: 'linear' },
   'fluid-gradient': { ids: fluidPresetIds, presets: fluidGradientPresets, swatch: 'linear' },
+  'particle-galaxy': {
+    ids: particleGalaxyPresetIds,
+    presets: particleGalaxyPresets,
+    swatch: 'radial',
+  },
   starfield: { ids: starfieldPresetIds, presets: starfieldPresets, swatch: 'radial' },
 };
 
 const effectComponents = {
   aurora: AuroraEffect,
   'fluid-gradient': FluidGradientEffect,
+  'particle-galaxy': ParticleGalaxyEffect,
   starfield: StarfieldEffect,
 } as const;
 
@@ -74,6 +85,13 @@ const controlConfig: Record<EffectId, ControlConfig> = {
     { label: 'Intensity', key: 'intensity', min: 0, max: 1.8, step: 0.01 },
     { label: 'Scale', key: 'scale', min: 0.5, max: 2, step: 0.01 },
     { label: 'Distortion', key: 'distortion', min: 0, max: 1.2, step: 0.01 },
+  ],
+  'particle-galaxy': [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 2, step: 0.01 },
+    { label: 'Arms', key: 'arms', min: 2, max: 6, step: 1 },
+    { label: 'Size', key: 'size', min: 0.5, max: 6, step: 0.1 },
+    { label: 'Spread', key: 'spread', min: 0.3, max: 2.5, step: 0.1 },
   ],
   starfield: [
     { label: 'Speed', key: 'speed', min: 0, max: 1.2, step: 0.01 },
@@ -125,15 +143,33 @@ function starfieldToSettings(presetId: StarfieldPresetId): Required<StarfieldEff
   };
 }
 
+function particleGalaxyToSettings(
+  presetId: ParticleGalaxyPresetId,
+): Required<ParticleGalaxyEffectProps> {
+  const preset = particleGalaxyPresets[presetId];
+  return {
+    color1: preset.color1,
+    color2: preset.color2,
+    speed: preset.speed,
+    intensity: preset.intensity,
+    arms: preset.arms,
+    size: preset.size,
+    spread: preset.spread,
+  };
+}
+
 type EffectState = {
-  preset: AuroraPresetId | FluidGradientPresetId | StarfieldPresetId;
-  settings: Required<AuroraEffectProps | FluidGradientEffectProps | StarfieldEffectProps>;
+  preset: AuroraPresetId | FluidGradientPresetId | ParticleGalaxyPresetId | StarfieldPresetId;
+  settings: Required<
+    AuroraEffectProps | FluidGradientEffectProps | ParticleGalaxyEffectProps | StarfieldEffectProps
+  >;
 };
 
 function initialEffectsState(): Record<EffectId, EffectState> {
   return {
     aurora: { preset: 'polar' as const, settings: auroraToSettings('polar') },
     'fluid-gradient': { preset: 'prism' as const, settings: fluidToSettings('prism') },
+    'particle-galaxy': { preset: 'nebula' as const, settings: particleGalaxyToSettings('nebula') },
     starfield: { preset: 'cruise' as const, settings: starfieldToSettings('cruise') },
   };
 }
@@ -152,7 +188,9 @@ export function App() {
           ? auroraToSettings
           : id === 'fluid-gradient'
             ? fluidToSettings
-            : starfieldToSettings;
+            : id === 'particle-galaxy'
+              ? particleGalaxyToSettings
+              : starfieldToSettings;
 
       setEffects((prev) => ({
         ...prev,
@@ -194,6 +232,11 @@ export function App() {
     if (selectedEffect === 'starfield') {
       const ss = s as Required<StarfieldEffectProps>;
       return `<StarfieldEffect preset="${p}" density={${ss.density}} speed={${ss.speed.toFixed(2)}} pointSize={${ss.pointSize}} />`;
+    }
+
+    if (selectedEffect === 'particle-galaxy') {
+      const gs = s as Required<ParticleGalaxyEffectProps>;
+      return `<ParticleGalaxyEffect preset="${p}" color1="${gs.color1}" color2="${gs.color2}" speed={${gs.speed.toFixed(2)}} arms={${gs.arms}} />`;
     }
 
     const as = s as Required<AuroraEffectProps>;

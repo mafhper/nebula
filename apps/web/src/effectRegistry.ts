@@ -3,11 +3,13 @@ import {
   auroraPresets,
   type FluidGradientPresetId,
   fluidGradientPresets,
+  type ParticleGalaxyPresetId,
+  particleGalaxyPresets,
   type StarfieldPresetId,
   starfieldPresets,
 } from '@nebula/effects';
 
-export type EffectId = 'aurora' | 'fluid-gradient' | 'starfield';
+export type EffectId = 'aurora' | 'fluid-gradient' | 'particle-galaxy' | 'starfield';
 export type EffectStatus = 'stable' | 'preview' | 'planned';
 
 export interface EffectMeta {
@@ -28,6 +30,9 @@ export interface EffectMeta {
 
 export const auroraPresetIds = Object.keys(auroraPresets) as AuroraPresetId[];
 export const fluidPresetIds = Object.keys(fluidGradientPresets) as FluidGradientPresetId[];
+export const particleGalaxyPresetIds = Object.keys(
+  particleGalaxyPresets,
+) as ParticleGalaxyPresetId[];
 export const starfieldPresetIds = Object.keys(starfieldPresets) as StarfieldPresetId[];
 
 export const effectRegistry = {
@@ -76,11 +81,29 @@ export const effectRegistry = {
     docsPath: '#learn',
     githubPath: 'packages/effects/src/effect-starfield',
   },
+  'particle-galaxy': {
+    id: 'particle-galaxy',
+    label: 'Particle Galaxy',
+    shortLabel: 'Galaxy',
+    componentName: 'ParticleGalaxyEffect',
+    status: 'preview',
+    tagline: 'Spiral particles',
+    concept: 'Galáxia procedural com braços espirais e rotação diferencial.',
+    technique: 'Points geometry, spiral arm offset, additive blending.',
+    bestFor: ['Cosmic backgrounds', 'Hero sections', 'Ambient motion'],
+    presetCount: particleGalaxyPresetIds.length,
+    defaultPreset: 'nebula',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-particle-galaxy',
+  },
 } satisfies Record<EffectId, EffectMeta>;
 
 export const effectIds = Object.keys(effectRegistry) as EffectId[];
 export const totalPresetCount =
-  auroraPresetIds.length + fluidPresetIds.length + starfieldPresetIds.length;
+  auroraPresetIds.length +
+  fluidPresetIds.length +
+  particleGalaxyPresetIds.length +
+  starfieldPresetIds.length;
 
 export const milestones = [
   {
@@ -100,8 +123,8 @@ export const milestones = [
   },
   {
     title: 'Next',
-    status: 'Planned',
-    items: ['Wave Plane', 'Particle Galaxy', 'Authoring docs'],
+    status: 'Preview',
+    items: ['Particle Galaxy', 'Wave Plane', 'Authoring docs'],
   },
 ];
 
@@ -122,14 +145,14 @@ export const effectRoadmap = [
     concept: 'Lightweight particles, depth and Z-axis travel.',
   },
   {
+    name: 'Particle Galaxy',
+    status: 'Preview',
+    concept: 'Spiral arms, rotation, procedural colors.',
+  },
+  {
     name: 'Wave Plane',
     status: 'Next',
     concept: 'Vertex shader displacement and normals.',
-  },
-  {
-    name: 'Particle Galaxy',
-    status: 'Planned',
-    concept: 'Instancing, buffers and mouse/touch interaction.',
   },
 ];
 

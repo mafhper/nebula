@@ -12,6 +12,15 @@ export type {
   FluidGradientPreset,
   FluidGradientUniforms,
 } from './effect-fluid-gradient/types';
+export { particleGalaxyControls } from './effect-particle-galaxy/controls';
+export { ParticleGalaxyEffect } from './effect-particle-galaxy/ParticleGalaxyEffect';
+export type { ParticleGalaxyPresetId } from './effect-particle-galaxy/presets';
+export { particleGalaxyPresets } from './effect-particle-galaxy/presets';
+export type {
+  ParticleGalaxyEffectProps,
+  ParticleGalaxyPreset,
+  ParticleGalaxyUniforms,
+} from './effect-particle-galaxy/types';
 export { starfieldControls } from './effect-starfield/controls';
 export type { StarfieldPresetId } from './effect-starfield/presets';
 export { starfieldPresets } from './effect-starfield/presets';
