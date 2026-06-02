@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { effectSettingsMap } from './effectSettings';
 import {
   auroraPresetIds,
   type EffectId,
@@ -13,6 +12,7 @@ import {
   vortexPresetIds,
   wavePlanePresetIds,
 } from './effectRegistry';
+import { effectSettingsMap } from './effectSettings';
 
 const firstPresetId: Record<EffectId, string> = {
   aurora: auroraPresetIds[0],
