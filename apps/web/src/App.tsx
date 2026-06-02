@@ -23,6 +23,7 @@ import { DeveloperHandOff } from './components/DeveloperHandOff';
 import { EffectPlayground } from './components/EffectPlayground';
 import { EffectsGallery } from './components/EffectsGallery';
 import { HeroExperience } from './components/HeroExperience';
+import { PerformanceMetrics, usePerformanceToggle } from './components/PerformanceMetrics';
 import { ProjectRoadmap } from './components/ProjectRoadmap';
 import { RangeControl } from './components/RangeControl';
 import { VisualCanvas } from './components/VisualCanvas';
@@ -177,6 +178,7 @@ function initialEffectsState(): Record<EffectId, EffectState> {
 export function App() {
   const [selectedEffect, setSelectedEffect] = useState<EffectId>('aurora');
   const [effects, setEffects] = useState(initialEffectsState);
+  const [showMetrics, toggleMetrics] = usePerformanceToggle();
 
   const current = effects[selectedEffect];
 
@@ -217,7 +219,10 @@ export function App() {
   const activePreset = presetConfig[selectedEffect].presets[current.preset];
   const EffectComponent = effectComponents[selectedEffect];
   const activeVisual = (
-    <EffectComponent {...(current.settings as unknown as Record<string, unknown>)} />
+    <>
+      <EffectComponent {...(current.settings as unknown as Record<string, unknown>)} />
+      {showMetrics && <PerformanceMetrics />}
+    </>
   );
 
   const snippet = useMemo(() => {
@@ -343,6 +348,16 @@ export function App() {
         activePresetConcept={activePreset.concept}
         controls={renderControls()}
         effectTabs={renderEffectTabs()}
+        metricsToggle={
+          <button
+            type="button"
+            className="metrics-toggle"
+            aria-pressed={showMetrics}
+            onClick={toggleMetrics}
+          >
+            {showMetrics ? 'Hide' : 'Show'} FPS
+          </button>
+        }
         presets={renderPresetGrid()}
         snippet={snippet}
         visual={

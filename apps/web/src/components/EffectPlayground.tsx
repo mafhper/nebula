@@ -9,6 +9,7 @@ interface EffectPlaygroundProps {
   activePresetConcept: string;
   controls: ReactNode;
   effectTabs: ReactNode;
+  metricsToggle: ReactNode;
   presets: ReactNode;
   snippet: string;
   visual: ReactNode;
@@ -20,6 +21,7 @@ export function EffectPlayground({
   activePresetConcept,
   controls,
   effectTabs,
+  metricsToggle,
   presets,
   snippet,
   visual,
@@ -57,6 +59,8 @@ export function EffectPlayground({
           </div>
 
           {controls}
+
+          {metricsToggle}
 
           <SnippetPanel snippet={snippet} />
         </aside>
