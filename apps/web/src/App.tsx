@@ -253,7 +253,7 @@ export function App() {
   const activePreset = presetConfig[selectedEffect].presets[current.preset];
   const EffectComponent = effectComponents[selectedEffect];
   const activeVisual = (
-    <Suspense fallback={<div className="effect-loading" />}>
+    <Suspense fallback={null}>
       <EffectComponent {...current.settings} />
       {showMetrics && <PerformanceMetrics />}
     </Suspense>
