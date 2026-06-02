@@ -2,18 +2,26 @@ import { describe, expect, it } from 'vitest';
 
 import { auroraPresets, fluidGradientPresets, particleGalaxyPresets, starfieldPresets } from './index';
 
-const presetSets = {
+interface PresetEntry {
+  label: string;
+  concept: string;
+  color1: string;
+  color2: string;
+  [key: string]: unknown;
+}
+
+const presetSets: Record<string, Record<string, PresetEntry>> = {
   aurora: auroraPresets,
   'fluid-gradient': fluidGradientPresets,
   'particle-galaxy': particleGalaxyPresets,
   starfield: starfieldPresets,
-} as const;
+};
 
 describe('preset data integrity', () => {
   for (const [effect, presets] of Object.entries(presetSets)) {
-    describe(`${effect} presets`, () => {
-      const ids = Object.keys(presets);
+    const ids = Object.keys(presets);
 
+    describe(`${effect} presets`, () => {
       it('has at least 3 presets', () => {
         expect(ids.length).toBeGreaterThanOrEqual(3);
       });
@@ -37,12 +45,12 @@ describe('preset data integrity', () => {
 
           if ('color3' in preset) {
             it('has valid color3', () => {
-              expect((preset as { color3: string }).color3).toMatch(/^#[0-9a-f]{6}$/i);
+              expect((preset as unknown as { color3: string }).color3).toMatch(/^#[0-9a-f]{6}$/i);
             });
           }
 
           it('has finite numeric properties', () => {
-            for (const [key, value] of Object.entries(preset)) {
+            for (const [, value] of Object.entries(preset)) {
               if (typeof value === 'number') {
                 expect(Number.isFinite(value)).toBe(true);
               }

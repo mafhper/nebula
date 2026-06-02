@@ -597,7 +597,9 @@ input:focus-visible {
   padding: 0.45rem;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .metrics-toggle:hover {
@@ -907,56 +909,5 @@ input:focus-visible {
 
   .preset-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-  .site-nav nav {
-    justify-content: start;
-  }
-
-  .hero-section {
-    min-height: 94svh;
-  }
-
-  .hero-content {
-    min-height: calc(94svh - 6rem);
-    gap: 1rem;
-    padding: 2.5rem 0 2rem;
-  }
-
-  .hero-copy h1 {
-    font-size: 3.65rem;
-  }
-
-  .hero-copy p:not(.product-kicker) {
-    font-size: 1rem;
-  }
-
-  .section-heading h2 {
-    font-size: 2.35rem;
-  }
-
-  .project-section {
-    width: min(100% - 1rem, 86rem);
-    padding: 3.5rem 0;
-  }
-
-  .preset-grid,
-  .effect-switcher,
-  .hero-effect-switcher,
-  .milestone-grid,
-  .architecture-flow {
-    grid-template-columns: 1fr;
-  }
-
-  .playground-visual,
-  .playground-canvas {
-    min-height: 24rem;
-  }
-
-  .snippet-panel div {
-    align-items: start;
-    flex-direction: column;
-    gap: 0.2rem;
   }
 }
