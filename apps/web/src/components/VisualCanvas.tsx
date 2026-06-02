@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { type ReactNode, Suspense } from 'react';
 
 import { CanvasErrorBoundary } from './CanvasErrorBoundary';
+import { PerformanceOptimizer } from './PerformanceOptimizer';
 
 interface VisualCanvasProps {
   children: ReactNode;
@@ -34,7 +35,7 @@ export function VisualCanvas({
         >
           <Suspense fallback={null}>
             <color attach="background" args={['#04060d']} />
-            {children}
+            <PerformanceOptimizer>{children}</PerformanceOptimizer>
           </Suspense>
         </Canvas>
       </CanvasErrorBoundary>
