@@ -60,7 +60,7 @@ export async function readCanvasStats(page: Page) {
 
       gl.readPixels(x, y, blockSize, blockSize, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-      for (let i = 0; i < pixels.length; i += 64) {
+      for (let i = 0; i < pixels.length; i += 4) {
         const r = pixels[i] ?? 0;
         const g = pixels[i + 1] ?? 0;
         const b = pixels[i + 2] ?? 0;
