@@ -35,11 +35,7 @@ export { plasmaControls } from './effect-plasma/controls';
 export { PlasmaEffect } from './effect-plasma/PlasmaEffect';
 export type { PlasmaPresetId } from './effect-plasma/presets';
 export { plasmaPresets } from './effect-plasma/presets';
-export type {
-  PlasmaEffectProps,
-  PlasmaPreset,
-  PlasmaUniforms,
-} from './effect-plasma/types';
+export type { PlasmaEffectProps, PlasmaPreset, PlasmaUniforms } from './effect-plasma/types';
 export { starfieldControls } from './effect-starfield/controls';
 export type { StarfieldPresetId } from './effect-starfield/presets';
 export { starfieldPresets } from './effect-starfield/presets';
@@ -52,11 +48,7 @@ export type {
 export { vortexControls } from './effect-vortex/controls';
 export type { VortexPresetId } from './effect-vortex/presets';
 export { vortexPresets } from './effect-vortex/presets';
-export type {
-  VortexEffectProps,
-  VortexPreset,
-  VortexUniforms,
-} from './effect-vortex/types';
+export type { VortexEffectProps, VortexPreset, VortexUniforms } from './effect-vortex/types';
 export { VortexEffect } from './effect-vortex/VortexEffect';
 export { wavePlaneControls } from './effect-wave-plane/controls';
 export type { WavePlanePresetId } from './effect-wave-plane/presets';

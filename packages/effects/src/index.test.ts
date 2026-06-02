@@ -11,7 +11,10 @@ import {
   wavePlanePresets,
 } from './index';
 
-const presetSets: Record<string, Record<string, { label: string; concept: string; color1: string; color2: string }>> = {
+const presetSets: Record<
+  string,
+  Record<string, { label: string; concept: string; color1: string; color2: string }>
+> = {
   aurora: auroraPresets,
   'fluid-gradient': fluidGradientPresets,
   geometric: geometricPresets,
