@@ -3,13 +3,30 @@ import {
   auroraPresets,
   type FluidGradientPresetId,
   fluidGradientPresets,
+  type GeometricPresetId,
+  geometricPresets,
   type ParticleGalaxyPresetId,
   particleGalaxyPresets,
+  type PlasmaPresetId,
+  plasmaPresets,
   type StarfieldPresetId,
   starfieldPresets,
+  type VortexPresetId,
+  vortexPresets,
+  type WavePlanePresetId,
+  wavePlanePresets,
 } from '@nebula/effects';
 
-export type EffectId = 'aurora' | 'fluid-gradient' | 'particle-galaxy' | 'starfield';
+export type EffectId =
+  | 'aurora'
+  | 'fluid-gradient'
+  | 'geometric'
+  | 'particle-galaxy'
+  | 'plasma'
+  | 'starfield'
+  | 'vortex'
+  | 'wave-plane';
+
 export type EffectStatus = 'stable' | 'preview' | 'planned';
 
 export interface EffectMeta {
@@ -30,12 +47,16 @@ export interface EffectMeta {
 
 export const auroraPresetIds = Object.keys(auroraPresets) as AuroraPresetId[];
 export const fluidPresetIds = Object.keys(fluidGradientPresets) as FluidGradientPresetId[];
+export const geometricPresetIds = Object.keys(geometricPresets) as GeometricPresetId[];
 export const particleGalaxyPresetIds = Object.keys(
   particleGalaxyPresets,
 ) as ParticleGalaxyPresetId[];
+export const plasmaPresetIds = Object.keys(plasmaPresets) as PlasmaPresetId[];
 export const starfieldPresetIds = Object.keys(starfieldPresets) as StarfieldPresetId[];
+export const vortexPresetIds = Object.keys(vortexPresets) as VortexPresetId[];
+export const wavePlanePresetIds = Object.keys(wavePlanePresets) as WavePlanePresetId[];
 
-export const effectRegistry = {
+export const effectRegistry: Record<EffectId, EffectMeta> = {
   aurora: {
     id: 'aurora',
     label: 'Aurora Field',
@@ -86,7 +107,7 @@ export const effectRegistry = {
     label: 'Particle Galaxy',
     shortLabel: 'Galaxy',
     componentName: 'ParticleGalaxyEffect',
-    status: 'preview',
+    status: 'stable',
     tagline: 'Spiral particles',
     concept: 'Galáxia procedural com braços espirais e rotação diferencial.',
     technique: 'Points geometry, spiral arm offset, additive blending.',
@@ -96,14 +117,78 @@ export const effectRegistry = {
     docsPath: '#learn',
     githubPath: 'packages/effects/src/effect-particle-galaxy',
   },
-} satisfies Record<EffectId, EffectMeta>;
+  vortex: {
+    id: 'vortex',
+    label: 'Spiral Vortex',
+    shortLabel: 'Vortex',
+    componentName: 'VortexEffect',
+    status: 'preview',
+    tagline: 'Tunnel of light',
+    concept: 'Túnel espiral com profundidade, braços e pulsação radial.',
+    technique: 'Fullscreen shader with polar coordinates and fbm noise.',
+    bestFor: ['Portal scenes', 'Psychedelic sections', 'Depth illusions'],
+    presetCount: vortexPresetIds.length,
+    defaultPreset: 'whirlpool',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-vortex',
+  },
+  'wave-plane': {
+    id: 'wave-plane',
+    label: 'Wave Plane',
+    shortLabel: 'Waves',
+    componentName: 'WavePlaneEffect',
+    status: 'preview',
+    tagline: 'Vertex displacement',
+    concept: 'Plano com ondulação via vertex shader, iluminação dinâmica.',
+    technique: 'Vertex shader displacement, plane geometry, normal calculation.',
+    bestFor: ['Topographic visuals', 'Data viz backgrounds', 'Ambient landscapes'],
+    presetCount: wavePlanePresetIds.length,
+    defaultPreset: 'ocean',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-wave-plane',
+  },
+  plasma: {
+    id: 'plasma',
+    label: 'Plasma Field',
+    shortLabel: 'Plasma',
+    componentName: 'PlasmaEffect',
+    status: 'preview',
+    tagline: 'Organic noise',
+    concept: 'Manchas orgânicas animadas com plasma clássico e HSV.',
+    technique: 'Fragment shader, plasma algorithm, layered noise, HSV conversion.',
+    bestFor: ['Retro aesthetics', 'Music visualizers', 'Abstract backgrounds'],
+    presetCount: plasmaPresetIds.length,
+    defaultPreset: 'nebula',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-plasma',
+  },
+  geometric: {
+    id: 'geometric',
+    label: 'Geometric Shape',
+    shortLabel: 'Geo',
+    componentName: 'GeometricEffect',
+    status: 'preview',
+    tagline: '3D primitives',
+    concept: 'Primitivas 3D com shader customizado, pulsação e fresnel glow.',
+    technique: 'Three.js geometries, vertex pulsing, fresnel edge glow.',
+    bestFor: ['Hero 3D', 'Product display', 'Tech showcases'],
+    presetCount: geometricPresetIds.length,
+    defaultPreset: 'nebulaKnot',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-geometric',
+  },
+};
 
 export const effectIds = Object.keys(effectRegistry) as EffectId[];
 export const totalPresetCount =
   auroraPresetIds.length +
   fluidPresetIds.length +
+  geometricPresetIds.length +
   particleGalaxyPresetIds.length +
-  starfieldPresetIds.length;
+  plasmaPresetIds.length +
+  starfieldPresetIds.length +
+  vortexPresetIds.length +
+  wavePlanePresetIds.length;
 
 export const milestones = [
   {
@@ -122,9 +207,9 @@ export const milestones = [
     items: ['Effect switching', 'Curated presets', 'Live snippets'],
   },
   {
-    title: 'Next',
+    title: 'Expansion',
     status: 'Preview',
-    items: ['Particle Galaxy', 'Wave Plane', 'Authoring docs'],
+    items: ['Particle Galaxy', 'Spiral Vortex', 'Wave Plane', 'Plasma Field', 'Geometric Shape'],
   },
 ];
 
@@ -146,13 +231,28 @@ export const effectRoadmap = [
   },
   {
     name: 'Particle Galaxy',
-    status: 'Preview',
+    status: 'Stable',
     concept: 'Spiral arms, rotation, procedural colors.',
   },
   {
+    name: 'Spiral Vortex',
+    status: 'Preview',
+    concept: 'Polar coordinates, fbm noise, spiral tunnel.',
+  },
+  {
     name: 'Wave Plane',
-    status: 'Next',
+    status: 'Preview',
     concept: 'Vertex shader displacement and normals.',
+  },
+  {
+    name: 'Plasma Field',
+    status: 'Preview',
+    concept: 'Plasma algorithm, HSV cycling, layered noise.',
+  },
+  {
+    name: 'Geometric Shape',
+    status: 'Preview',
+    concept: 'Three.js primitives with vertex pulsing and fresnel glow.',
   },
 ];
 

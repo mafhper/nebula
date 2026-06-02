@@ -1,32 +1,37 @@
 import { describe, expect, it } from 'vitest';
 
-import { auroraPresets, fluidGradientPresets, particleGalaxyPresets, starfieldPresets } from './index';
+import {
+  auroraPresets,
+  fluidGradientPresets,
+  geometricPresets,
+  particleGalaxyPresets,
+  plasmaPresets,
+  starfieldPresets,
+  vortexPresets,
+  wavePlanePresets,
+} from './index';
 
-interface PresetEntry {
-  label: string;
-  concept: string;
-  color1: string;
-  color2: string;
-  [key: string]: unknown;
-}
-
-const presetSets: Record<string, Record<string, PresetEntry>> = {
+const presetSets: Record<string, Record<string, { label: string; concept: string; color1: string; color2: string }>> = {
   aurora: auroraPresets,
   'fluid-gradient': fluidGradientPresets,
+  geometric: geometricPresets,
   'particle-galaxy': particleGalaxyPresets,
+  plasma: plasmaPresets,
   starfield: starfieldPresets,
+  vortex: vortexPresets,
+  'wave-plane': wavePlanePresets,
 };
 
 describe('preset data integrity', () => {
   for (const [effect, presets] of Object.entries(presetSets)) {
-    const ids = Object.keys(presets);
+    const keys = Object.keys(presets);
 
     describe(`${effect} presets`, () => {
       it('has at least 3 presets', () => {
-        expect(ids.length).toBeGreaterThanOrEqual(3);
+        expect(keys.length).toBeGreaterThanOrEqual(3);
       });
 
-      for (const id of ids) {
+      for (const id of keys) {
         describe(`${id}`, () => {
           const preset = presets[id];
 
@@ -45,7 +50,8 @@ describe('preset data integrity', () => {
 
           if ('color3' in preset) {
             it('has valid color3', () => {
-              expect((preset as unknown as { color3: string }).color3).toMatch(/^#[0-9a-f]{6}$/i);
+              const p = preset as { color3: string };
+              expect(p.color3).toMatch(/^#[0-9a-f]{6}$/i);
             });
           }
 

@@ -1,0 +1,58 @@
+import type { GeometricPreset } from './types';
+
+export const geometricPresets = {
+  nebulaKnot: {
+    label: 'Nebula Knot',
+    concept: 'Nó toroidal com pulsação suave e gradiente galáctico azul-rosa.',
+    color1: '#6366f1',
+    color2: '#ec4899',
+    color3: '#c4b5fd',
+    speed: 0.28,
+    intensity: 1.1,
+    scale: 1.2,
+    rotation: 0.6,
+    glow: 0.7,
+    shape: 'torusknot' as const,
+  },
+  crystal: {
+    label: 'Crystal',
+    concept: 'Icosaedro facetado com reflexos gelados e bordas ciano.',
+    color1: '#2dd4bf',
+    color2: '#0891b2',
+    color3: '#ccfbf1',
+    speed: 0.15,
+    intensity: 0.9,
+    scale: 1,
+    rotation: 0.4,
+    glow: 0.4,
+    shape: 'icosahedron' as const,
+  },
+  ring: {
+    label: 'Ring',
+    concept: 'Anel energético com rotação axial e brilho dourado nas bordas.',
+    color1: '#f59e0b',
+    color2: '#ef4444',
+    color3: '#fef3c7',
+    speed: 0.36,
+    intensity: 1.3,
+    scale: 1.4,
+    rotation: 0.8,
+    glow: 0.9,
+    shape: 'torus' as const,
+  },
+  prism: {
+    label: 'Prism Core',
+    concept: 'Octaedro pulsante com refração interna e espectro de cores.',
+    color1: '#a855f7',
+    color2: '#06b6d4',
+    color3: '#fde047',
+    speed: 0.22,
+    intensity: 1.2,
+    scale: 0.9,
+    rotation: 0.5,
+    glow: 0.6,
+    shape: 'octahedron' as const,
+  },
+} satisfies Record<string, GeometricPreset>;
+
+export type GeometricPresetId = keyof typeof geometricPresets;
