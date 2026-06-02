@@ -25,6 +25,7 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
-    "@types/three": "^0.184.0"
+    "@types/three": "^0.184.0",
+    "rollup-plugin-visualizer": "^7.0.1"
   }
 }
