@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   validate:
@@ -44,7 +45,18 @@ jobs:
         run: ./node_modules/.bin/playwright install --with-deps chromium
 
       - name: Visual test
-        run: npm run test:visual
+        run: >
+          npm run test:visual --
+          ${{ github.ref_name == 'main' && '--update-snapshots' || '' }}
+          --reporter=list
+
+      - name: Upload snapshots
+        if: github.ref_name == 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-snapshots
+          path: tests/**/*-snapshots/
+          retention-days: 7
 
       - name: Build
         run: npm run build

@@ -9,6 +9,12 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:5173/nebula/',
     trace: 'retain-on-failure',
   },
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02,
+      animations: 'disabled',
+    },
+  },
   webServer: {
     command: 'npm run dev',
     url: 'http://127.0.0.1:5173/nebula/',

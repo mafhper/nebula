@@ -13,7 +13,35 @@ const effects = [
   { id: 'geometric', label: 'Geo', preset: 'Nebula Knot' },
 ] as const;
 
+async function waitForNonblankCanvas(page: import('@playwright/test').Page, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const stats = await readCanvasStats(page);
+    if (stats.uniqueColors > 1) return stats;
+    await page.waitForTimeout(1000);
+  }
+  return readCanvasStats(page);
+}
+
 test.describe('visual snapshots', () => {
+  test('playground layout renders correctly', async ({ page }) => {
+    test.setTimeout(60_000);
+    const failures = captureFailures(page);
+
+    await page.goto('/');
+    await page.waitForTimeout(1500);
+    await page.locator('#playground').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+
+    await expect(failures.pageErrors).toEqual([]);
+    await expect(failures.consoleErrors).toEqual([]);
+
+    const deck = page.locator('.control-deck');
+    const box = await deck.boundingBox();
+    expect(box).toBeTruthy();
+    const screenshot = await page.screenshot({ clip: box! });
+    await expect(screenshot).toMatchSnapshot('control-deck.png');
+  });
+
   for (const effect of effects) {
     test(`canvas renders ${effect.id} without errors`, async ({ page }) => {
       test.setTimeout(60_000);
@@ -27,13 +55,13 @@ test.describe('visual snapshots', () => {
 
       if (await tab.isVisible()) {
         await tab.click();
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(1500);
       }
 
       const canvasDone = page.locator('.nebula-canvas').first();
       await expect(canvasDone).toBeAttached({ timeout: 10_000 });
 
-      const canvasStats = await readCanvasStats(page);
+      const canvasStats = await waitForNonblankCanvas(page);
 
       expect(failures.pageErrors).toEqual([]);
       expect(failures.consoleErrors).toEqual([]);

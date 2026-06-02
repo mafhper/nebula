@@ -7,7 +7,7 @@ test('nebula canvas renders nonblank pixels', async ({ page }) => {
   const failures = captureFailures(page);
 
   await page.goto('/');
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(1500);
 
   const canvasStats = await readCanvasStats(page);
 
