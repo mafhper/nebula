@@ -1,0 +1,61 @@
+import type { ParticleGalaxyPreset } from './types';
+
+export const particleGalaxyPresets = {
+  nebula: {
+    label: 'Nebula',
+    concept: 'Spiral nebula com braços suaves e núcleo brilhante.',
+    color1: '#c4b5fd',
+    color2: '#67e8f9',
+    speed: 0.3,
+    intensity: 0.85,
+    arms: 3,
+    size: 2.5,
+    spread: 1,
+  },
+  andromeda: {
+    label: 'Andromeda',
+    concept: 'Galáxia densa com cores quentes e braços fechados.',
+    color1: '#fca5a5',
+    color2: '#fbbf24',
+    speed: 0.15,
+    intensity: 1.1,
+    arms: 2,
+    size: 3,
+    spread: 0.7,
+  },
+  swirl: {
+    label: 'Swirl',
+    concept: 'Redemoinho rápido com partículas pequenas e intensas.',
+    color1: '#a78bfa',
+    color2: '#34d399',
+    speed: 0.6,
+    intensity: 1,
+    arms: 4,
+    size: 2,
+    spread: 1.2,
+  },
+  phantom: {
+    label: 'Phantom',
+    concept: 'Braços fantasma com partículas esparsas e baixo brilho.',
+    color1: '#e2e8f0',
+    color2: '#818cf8',
+    speed: 0.08,
+    intensity: 0.5,
+    arms: 3,
+    size: 4,
+    spread: 1.5,
+  },
+  burst: {
+    label: 'Burst',
+    concept: 'Explosão radial com alta dispersão e velocidade.',
+    color1: '#f8fafc',
+    color2: '#fb7185',
+    speed: 0.8,
+    intensity: 1.3,
+    arms: 5,
+    size: 1.8,
+    spread: 0.5,
+  },
+} satisfies Record<string, ParticleGalaxyPreset>;
+
+export type ParticleGalaxyPresetId = keyof typeof particleGalaxyPresets;
