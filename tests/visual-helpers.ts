@@ -81,3 +81,13 @@ export async function readCanvasStats(page: Page) {
     };
   });
 }
+
+export async function waitForNonblankCanvas(page: Page, retries = 8, delay = 1200) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const stats = await readCanvasStats(page);
+    if (stats.uniqueColors > 1) return stats;
+    await page.waitForTimeout(delay);
+  }
+
+  return readCanvasStats(page);
+}

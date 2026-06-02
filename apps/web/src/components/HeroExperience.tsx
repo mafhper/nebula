@@ -5,6 +5,7 @@ import { type EffectId, type EffectMeta, effectRegistry } from '../effectRegistr
 interface HeroExperienceProps {
   activeEffect: EffectMeta;
   effectIds: EffectId[];
+  featuredPresetLabel: string;
   selectedEffect: EffectId;
   totalPresetCount: number;
   visual: ReactNode;
@@ -14,6 +15,7 @@ interface HeroExperienceProps {
 export function HeroExperience({
   activeEffect,
   effectIds,
+  featuredPresetLabel,
   selectedEffect,
   totalPresetCount,
   visual,
@@ -64,6 +66,7 @@ export function HeroExperience({
           <p>Featured effect</p>
           <h2>{activeEffect.label}</h2>
           <span>{activeEffect.tagline}</span>
+          <small>Now showing {featuredPresetLabel}</small>
           <div className="hero-effect-switcher" aria-label="Change featured effect">
             {effectIds.map((effectId) => {
               const effect = effectRegistry[effectId];

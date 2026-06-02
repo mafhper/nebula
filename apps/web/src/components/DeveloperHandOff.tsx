@@ -9,10 +9,10 @@ export function DeveloperHandOff({ effectIds }: DeveloperHandOffProps) {
     <section id="learn" className="project-section developer-section">
       <div className="section-heading">
         <p className="section-kicker">Developer hand-off</p>
-        <h2>Built as components, documented as rendering lessons.</h2>
+        <h2>The demo maps directly to implementation files.</h2>
         <p>
-          Each effect is a React component with typed props, curated presets and a clear rendering
-          concept.
+          The page should teach by proximity: the visible effect, the chosen props and the source
+          location stay close enough for a developer to move from exploration to code.
         </p>
       </div>
 
@@ -29,18 +29,38 @@ export function DeveloperHandOff({ effectIds }: DeveloperHandOffProps) {
           </span>
         </div>
 
-        <div className="source-grid" aria-label="Effect source locations">
-          {effectIds.map((effectId) => {
-            const effect = effectRegistry[effectId];
+        <div className="developer-notes">
+          <div className="handoff-points" aria-label="Implementation notes">
+            <p>Implementation model</p>
+            <ul>
+              <li>Each effect owns a component, preset adapter and shader/material boundary.</li>
+              <li>The playground exposes only stable numeric controls for quick comparison.</li>
+              <li>Visual tests sample canvas pixels before any release branch is merged.</li>
+            </ul>
+          </div>
 
-            return (
-              <article key={effect.id} className="source-card">
-                <span>{effect.componentName}</span>
-                <h3>{effect.label}</h3>
-                <code>{effect.githubPath}</code>
-              </article>
-            );
-          })}
+          <div className="source-directory" aria-label="Effect source locations">
+            <p>Source directory</p>
+            <div>
+              <span>Component</span>
+              <span>Path</span>
+            </div>
+            {effectIds.map((effectId) => {
+              const effect = effectRegistry[effectId];
+
+              return (
+                <a
+                  key={effect.id}
+                  href={`https://github.com/mafhper/nebula/tree/main/${effect.githubPath}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <strong>{effect.componentName}</strong>
+                  <code>{effect.githubPath}</code>
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
