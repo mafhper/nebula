@@ -8,6 +8,7 @@ export interface WavePlaneEffectProps {
   amplitude?: number;
   frequency?: number;
   complexity?: number;
+  intensity?: number;
 }
 
 export interface WavePlanePreset {
@@ -31,4 +32,5 @@ export interface WavePlaneUniforms extends Record<string, IUniform<unknown>> {
   uAmplitude: IUniform<number>;
   uFrequency: IUniform<number>;
   uComplexity: IUniform<number>;
+  uIntensity: IUniform<number>;
 }
