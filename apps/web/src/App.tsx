@@ -1,35 +1,19 @@
 import {
   AuroraEffect,
-  type AuroraEffectProps,
-  type AuroraPresetId,
   auroraPresets,
   FluidGradientEffect,
-  type FluidGradientEffectProps,
-  type FluidGradientPresetId,
   fluidGradientPresets,
   GeometricEffect,
-  type GeometricEffectProps,
-  type GeometricPresetId,
   geometricPresets,
   ParticleGalaxyEffect,
-  type ParticleGalaxyEffectProps,
-  type ParticleGalaxyPresetId,
   particleGalaxyPresets,
   PlasmaEffect,
-  type PlasmaEffectProps,
-  type PlasmaPresetId,
   plasmaPresets,
   StarfieldEffect,
-  type StarfieldEffectProps,
-  type StarfieldPresetId,
   starfieldPresets,
   VortexEffect,
-  type VortexEffectProps,
-  type VortexPresetId,
   vortexPresets,
   WavePlaneEffect,
-  type WavePlaneEffectProps,
-  type WavePlanePresetId,
   wavePlanePresets,
 } from '@nebula/effects';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -57,6 +41,7 @@ import {
   vortexPresetIds,
   wavePlanePresetIds,
 } from './effectRegistry';
+import { effectSettingsMap } from './effectSettings';
 
 const presetConfig: Record<
   EffectId,
@@ -157,151 +142,33 @@ const controlConfig: Record<EffectId, ControlConfig> = {
   ],
 };
 
-function auroraToSettings(presetId: AuroraPresetId): Required<AuroraEffectProps> {
-  const preset = auroraPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    bandScale: preset.bandScale,
-    distortion: preset.distortion,
-    contrast: preset.contrast,
-  };
-}
-
-function fluidToSettings(presetId: FluidGradientPresetId): Required<FluidGradientEffectProps> {
-  const preset = fluidGradientPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    scale: preset.scale,
-    distortion: preset.distortion,
-    contrast: preset.contrast,
-  };
-}
-
-function starfieldToSettings(presetId: StarfieldPresetId): Required<StarfieldEffectProps> {
-  const preset = starfieldPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    density: preset.density,
-    depth: preset.depth,
-    spread: preset.spread,
-    pointSize: preset.pointSize,
-  };
-}
-
-function particleGalaxyToSettings(
-  presetId: ParticleGalaxyPresetId,
-): Required<ParticleGalaxyEffectProps> {
-  const preset = particleGalaxyPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    arms: preset.arms,
-    size: preset.size,
-    spread: preset.spread,
-  };
-}
-
-function vortexToSettings(presetId: VortexPresetId): Required<VortexEffectProps> {
-  const preset = vortexPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    arms: preset.arms,
-    twist: preset.twist,
-    zoom: preset.zoom,
-  };
-}
-
-function wavePlaneToSettings(presetId: WavePlanePresetId): Required<WavePlaneEffectProps> {
-  const preset = wavePlanePresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    amplitude: preset.amplitude,
-    frequency: preset.frequency,
-    complexity: preset.complexity,
-  };
-}
-
-function plasmaToSettings(presetId: PlasmaPresetId): Required<PlasmaEffectProps> {
-  const preset = plasmaPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    scale: preset.scale,
-    complexity: preset.complexity,
-    saturation: preset.saturation,
-  };
-}
-
-function geometricToSettings(presetId: GeometricPresetId): Required<GeometricEffectProps> {
-  const preset = geometricPresets[presetId];
-  return {
-    color1: preset.color1,
-    color2: preset.color2,
-    color3: preset.color3,
-    speed: preset.speed,
-    intensity: preset.intensity,
-    scale: preset.scale,
-    rotation: preset.rotation,
-    glow: preset.glow,
-    shape: preset.shape,
-  };
-}
-
 type EffectState = {
-  preset:
-    | AuroraPresetId
-    | FluidGradientPresetId
-    | ParticleGalaxyPresetId
-    | StarfieldPresetId
-    | VortexPresetId
-    | WavePlanePresetId
-    | PlasmaPresetId
-    | GeometricPresetId;
-  settings: Required<
-    | AuroraEffectProps
-    | FluidGradientEffectProps
-    | ParticleGalaxyEffectProps
-    | StarfieldEffectProps
-    | VortexEffectProps
-    | WavePlaneEffectProps
-    | PlasmaEffectProps
-    | GeometricEffectProps
-  >;
+  preset: string;
+  settings: Record<string, unknown>;
 };
 
 function initialEffectsState(): Record<EffectId, EffectState> {
   return {
-    aurora: { preset: 'polar' as const, settings: auroraToSettings('polar') },
-    'fluid-gradient': { preset: 'prism' as const, settings: fluidToSettings('prism') },
-    'particle-galaxy': { preset: 'nebula' as const, settings: particleGalaxyToSettings('nebula') },
-    starfield: { preset: 'cruise' as const, settings: starfieldToSettings('cruise') },
-    vortex: { preset: 'whirlpool' as const, settings: vortexToSettings('whirlpool') },
-    'wave-plane': { preset: 'ocean' as const, settings: wavePlaneToSettings('ocean') },
-    plasma: { preset: 'nebula' as const, settings: plasmaToSettings('nebula') },
-    geometric: { preset: 'nebulaKnot' as const, settings: geometricToSettings('nebulaKnot') },
+    aurora: { preset: 'polar', settings: effectSettingsMap.aurora.toSettings('polar') },
+    'fluid-gradient': {
+      preset: 'prism',
+      settings: effectSettingsMap['fluid-gradient'].toSettings('prism'),
+    },
+    'particle-galaxy': {
+      preset: 'nebula',
+      settings: effectSettingsMap['particle-galaxy'].toSettings('nebula'),
+    },
+    starfield: { preset: 'cruise', settings: effectSettingsMap.starfield.toSettings('cruise') },
+    vortex: { preset: 'whirlpool', settings: effectSettingsMap.vortex.toSettings('whirlpool') },
+    'wave-plane': {
+      preset: 'ocean',
+      settings: effectSettingsMap['wave-plane'].toSettings('ocean'),
+    },
+    plasma: { preset: 'nebula', settings: effectSettingsMap.plasma.toSettings('nebula') },
+    geometric: {
+      preset: 'nebulaKnot',
+      settings: effectSettingsMap.geometric.toSettings('nebulaKnot'),
+    },
   };
 }
 
@@ -355,26 +222,10 @@ export function App() {
   const setCurrentPreset = useCallback(
     (presetId: string) => {
       const id = selectedEffect;
-      const toSettings =
-        id === 'aurora'
-          ? auroraToSettings
-          : id === 'fluid-gradient'
-            ? fluidToSettings
-            : id === 'particle-galaxy'
-              ? particleGalaxyToSettings
-              : id === 'vortex'
-                ? vortexToSettings
-                : id === 'wave-plane'
-                  ? wavePlaneToSettings
-                  : id === 'plasma'
-                    ? plasmaToSettings
-                    : id === 'geometric'
-                      ? geometricToSettings
-                      : starfieldToSettings;
-
+      const adapter = effectSettingsMap[id];
       setEffects((prev) => ({
         ...prev,
-        [id]: { preset: presetId as never, settings: toSettings(presetId as never) },
+        [id]: { preset: presetId, settings: adapter.toSettings(presetId) },
       }));
     },
     [selectedEffect],
@@ -398,52 +249,14 @@ export function App() {
   const EffectComponent = effectComponents[selectedEffect];
   const activeVisual = (
     <>
-      <EffectComponent {...(current.settings as unknown as Record<string, unknown>)} />
+      <EffectComponent {...current.settings} />
       {showMetrics && <PerformanceMetrics />}
     </>
   );
 
   const snippet = useMemo(() => {
-    const s = current.settings;
-    const p = current.preset;
-
-    if (selectedEffect === 'fluid-gradient') {
-      const fs = s as Required<FluidGradientEffectProps>;
-      return `<FluidGradientEffect preset="${p}" color1="${fs.color1}" color2="${fs.color2}" speed={${fs.speed.toFixed(2)}} intensity={${fs.intensity.toFixed(2)}} />`;
-    }
-
-    if (selectedEffect === 'starfield') {
-      const ss = s as Required<StarfieldEffectProps>;
-      return `<StarfieldEffect preset="${p}" density={${ss.density}} speed={${ss.speed.toFixed(2)}} pointSize={${ss.pointSize}} />`;
-    }
-
-    if (selectedEffect === 'particle-galaxy') {
-      const gs = s as Required<ParticleGalaxyEffectProps>;
-      return `<ParticleGalaxyEffect preset="${p}" color1="${gs.color1}" color2="${gs.color2}" speed={${gs.speed.toFixed(2)}} arms={${gs.arms}} />`;
-    }
-
-    if (selectedEffect === 'vortex') {
-      const vs = s as Required<VortexEffectProps>;
-      return `<VortexEffect preset="${p}" color1="${vs.color1}" color2="${vs.color2}" speed={${vs.speed.toFixed(2)}} arms={${vs.arms}} twist={${vs.twist.toFixed(2)}} />`;
-    }
-
-    if (selectedEffect === 'wave-plane') {
-      const ws = s as Required<WavePlaneEffectProps>;
-      return `<WavePlaneEffect preset="${p}" color1="${ws.color1}" color2="${ws.color2}" speed={${ws.speed.toFixed(2)}} amplitude={${ws.amplitude.toFixed(2)}} frequency={${ws.frequency.toFixed(1)}} />`;
-    }
-
-    if (selectedEffect === 'plasma') {
-      const ps = s as Required<PlasmaEffectProps>;
-      return `<PlasmaEffect preset="${p}" color1="${ps.color1}" color2="${ps.color2}" speed={${ps.speed.toFixed(2)}} complexity={${ps.complexity}} />`;
-    }
-
-    if (selectedEffect === 'geometric') {
-      const gs = s as Required<GeometricEffectProps>;
-      return `<GeometricEffect preset="${p}" color1="${gs.color1}" color2="${gs.color2}" speed={${gs.speed.toFixed(2)}} glow={${gs.glow.toFixed(2)}} />`;
-    }
-
-    const as = s as Required<AuroraEffectProps>;
-    return `<AuroraEffect preset="${p}" color1="${as.color1}" color2="${as.color2}" speed={${as.speed.toFixed(2)}} intensity={${as.intensity.toFixed(2)}} />`;
+    const adapter = effectSettingsMap[selectedEffect];
+    return adapter.toSnippet(current.preset, current.settings);
   }, [current, selectedEffect]);
 
   function renderEffectTabs() {
@@ -562,7 +375,7 @@ export function App() {
                   setCurrentPreset(id);
                   setEffects((prev) => ({
                     ...prev,
-                    [selectedEffect]: { preset: id as never, settings: cp.settings as never },
+                    [selectedEffect]: { preset: id, settings: cp.settings },
                   }));
                 }}
               >
