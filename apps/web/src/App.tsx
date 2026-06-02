@@ -60,10 +60,6 @@ const presetConfig: Record<
   'wave-plane': { ids: wavePlanePresetIds, presets: wavePlanePresets, swatch: 'linear' },
 };
 
-function loadingFallback() {
-  return <div className="effect-loading" />;
-}
-
 const effectComponents: Record<
   string,
   React.LazyExoticComponent<React.ComponentType<Record<string, unknown>>>
