@@ -225,7 +225,6 @@ export function App() {
   const [effects, setEffects] = useState(initialEffectsState);
   const [showMetrics, toggleMetrics] = usePerformanceToggle();
   const [fading, setFading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [customPresets, setCustomPresets] = useState(loadCustomPresets);
   const [savingName, setSavingName] = useState('');
   const prevEffectRef = useRef(selectedEffect);
@@ -282,47 +281,23 @@ export function App() {
   }, [current, selectedEffect]);
 
   function renderEffectTabs() {
-    const filtered = effectIds.filter((effectId) => {
-      if (!searchQuery) return true;
-      const q = searchQuery.toLowerCase();
-      const e = effectRegistry[effectId];
-      return (
-        e.label.toLowerCase().includes(q) ||
-        e.shortLabel.toLowerCase().includes(q) ||
-        e.concept.toLowerCase().includes(q) ||
-        e.technique.toLowerCase().includes(q) ||
-        e.tagline.toLowerCase().includes(q)
-      );
-    });
-
     return (
-      <>
-        <input
-          type="search"
-          className="effect-search"
-          placeholder="Filter effects…"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Search effects"
-        />
-        <div className="effect-switcher" aria-label="Effect selection">
-          {filtered.map((effectId) => {
+      <div className="effect-selector" aria-label="Effect selection">
+        <select
+          className="effect-select"
+          value={selectedEffect}
+          onChange={(e) => setSelectedEffect(e.target.value as EffectId)}
+        >
+          {effectIds.map((effectId) => {
             const effect = effectRegistry[effectId];
-
             return (
-              <button
-                key={effectId}
-                type="button"
-                aria-pressed={selectedEffect === effectId}
-                onClick={() => setSelectedEffect(effectId)}
-              >
-                <span>{effect.shortLabel}</span>
-                <small>{effect.presetCount} presets</small>
-              </button>
+              <option key={effectId} value={effectId}>
+                {effect.label} ({effect.presetCount} presets)
+              </option>
             );
           })}
-        </div>
-      </>
+        </select>
+      </div>
     );
   }
 
@@ -507,6 +482,18 @@ export function App() {
 
       <DeveloperHandOff effectIds={effectIds} />
       <ProjectRoadmap />
+
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <span className="brand-mark">Nebula</span>
+          <p>
+            Open-source WebGL effects for React.{' '}
+            <a href="https://github.com/mafhper/nebula" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }

@@ -452,7 +452,7 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(22rem, 29rem);
   gap: 0.9rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .playground-visual {
@@ -479,7 +479,38 @@ input:focus-visible {
   display: grid;
   gap: 1rem;
   align-content: start;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
   padding: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+}
+
+.effect-selector {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.effect-select {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+}
+
+.effect-select:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
 .effect-switcher button {
@@ -801,6 +832,41 @@ input:focus-visible {
   gap: 0.65rem;
 }
 
+.source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.55rem;
+}
+
+.source-card {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.source-card span {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 780;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.source-card h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--text);
+}
+
+.source-card code {
+  color: var(--code-text);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
 .source-list article {
   display: grid;
   gap: 0.4rem;
@@ -912,6 +978,10 @@ input:focus-visible {
     max-width: 36rem;
   }
 
+  .control-deck {
+    max-height: none;
+  }
+
   .playground-visual,
   .playground-canvas {
     min-height: 31rem;
@@ -967,10 +1037,6 @@ input:focus-visible {
     padding: 2.8rem 0;
   }
 
-  .effect-switcher {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .milestone-grid,
   .architecture-flow {
     grid-template-columns: 1fr;
@@ -979,6 +1045,19 @@ input:focus-visible {
   .playground-visual,
   .playground-canvas {
     min-height: 20rem;
+  }
+
+  .control-deck {
+    max-height: none;
+  }
+
+  .source-grid {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
   }
 
   .snippet-panel > div:first-child {
@@ -1014,6 +1093,31 @@ input:focus-visible {
   .preset-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.site-footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  width: min(86rem, calc(100vw - 2rem));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footer-inner p {
+  margin: 0;
+  color: var(--subtle);
+  font-size: 0.82rem;
+}
+
+.footer-inner a {
+  color: var(--accent-soft);
 }
 
 .effect-loading {

@@ -1,4 +1,4 @@
-import { architecture, effectRoadmap, milestones } from '../effectRegistry';
+import { architecture, effectRoadmap } from '../effectRegistry';
 
 export function ProjectRoadmap() {
   return (
@@ -6,26 +6,7 @@ export function ProjectRoadmap() {
       <div className="section-heading">
         <p className="section-kicker">Roadmap</p>
         <h2>Quality gates before more effects.</h2>
-        <p>
-          Nebula stays useful by keeping the catalog small, documented and visually distinct.
-          Contribution details live below the product experience, where contributors expect them.
-        </p>
-      </div>
-
-      <div className="milestone-grid">
-        {milestones.map((milestone) => (
-          <article key={milestone.title} className="milestone-card">
-            <div>
-              <span>{milestone.status}</span>
-              <h3>{milestone.title}</h3>
-            </div>
-            <ul>
-              {milestone.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
+        <p>A small, documented and visually distinct catalog — not a quantity play.</p>
       </div>
 
       <div className="roadmap-list">
