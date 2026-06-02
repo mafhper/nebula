@@ -571,9 +571,27 @@ input:focus-visible {
   gap: 1rem;
 }
 
-.snippet-panel span {
-  color: var(--subtle);
-  font-size: 0.76rem;
+.copy-button {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--accent-soft);
+  font-size: 0.75rem;
+  font-weight: 680;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.copy-button:hover {
+  background: var(--panel-strong);
+  border-color: var(--accent);
+}
+
+.snippet-wrapper {
+  position: relative;
 }
 
 .snippet-panel pre,
