@@ -7,14 +7,30 @@ import {
   type FluidGradientEffectProps,
   type FluidGradientPresetId,
   fluidGradientPresets,
+  GeometricEffect,
+  type GeometricEffectProps,
+  type GeometricPresetId,
+  geometricPresets,
   ParticleGalaxyEffect,
   type ParticleGalaxyEffectProps,
   type ParticleGalaxyPresetId,
   particleGalaxyPresets,
+  PlasmaEffect,
+  type PlasmaEffectProps,
+  type PlasmaPresetId,
+  plasmaPresets,
   StarfieldEffect,
   type StarfieldEffectProps,
   type StarfieldPresetId,
   starfieldPresets,
+  VortexEffect,
+  type VortexEffectProps,
+  type VortexPresetId,
+  vortexPresets,
+  WavePlaneEffect,
+  type WavePlaneEffectProps,
+  type WavePlanePresetId,
+  wavePlanePresets,
 } from '@nebula/effects';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -33,9 +49,13 @@ import {
   effectIds,
   effectRegistry,
   fluidPresetIds,
+  geometricPresetIds,
   particleGalaxyPresetIds,
+  plasmaPresetIds,
   starfieldPresetIds,
   totalPresetCount,
+  vortexPresetIds,
+  wavePlanePresetIds,
 } from './effectRegistry';
 
 const presetConfig: Record<
@@ -51,19 +71,27 @@ const presetConfig: Record<
 > = {
   aurora: { ids: auroraPresetIds, presets: auroraPresets, swatch: 'linear' },
   'fluid-gradient': { ids: fluidPresetIds, presets: fluidGradientPresets, swatch: 'linear' },
+  geometric: { ids: geometricPresetIds, presets: geometricPresets, swatch: 'radial' },
   'particle-galaxy': {
     ids: particleGalaxyPresetIds,
     presets: particleGalaxyPresets,
     swatch: 'radial',
   },
+  plasma: { ids: plasmaPresetIds, presets: plasmaPresets, swatch: 'linear' },
   starfield: { ids: starfieldPresetIds, presets: starfieldPresets, swatch: 'radial' },
+  vortex: { ids: vortexPresetIds, presets: vortexPresets, swatch: 'radial' },
+  'wave-plane': { ids: wavePlanePresetIds, presets: wavePlanePresets, swatch: 'linear' },
 };
 
 const effectComponents = {
   aurora: AuroraEffect,
   'fluid-gradient': FluidGradientEffect,
+  geometric: GeometricEffect,
   'particle-galaxy': ParticleGalaxyEffect,
+  plasma: PlasmaEffect,
   starfield: StarfieldEffect,
+  vortex: VortexEffect,
+  'wave-plane': WavePlaneEffect,
 } as const;
 
 type ControlConfig = ReadonlyArray<{
@@ -99,6 +127,33 @@ const controlConfig: Record<EffectId, ControlConfig> = {
     { label: 'Density', key: 'density', min: 300, max: 1800, step: 50 },
     { label: 'Depth', key: 'depth', min: 8, max: 32, step: 1 },
     { label: 'Point size', key: 'pointSize', min: 8, max: 28, step: 1 },
+  ],
+  vortex: [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 2, step: 0.01 },
+    { label: 'Arms', key: 'arms', min: 1, max: 8, step: 1 },
+    { label: 'Twist', key: 'twist', min: 0, max: 2.5, step: 0.01 },
+    { label: 'Zoom', key: 'zoom', min: 0.3, max: 2.5, step: 0.1 },
+  ],
+  'wave-plane': [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Amplitude', key: 'amplitude', min: 0, max: 1, step: 0.01 },
+    { label: 'Frequency', key: 'frequency', min: 0.2, max: 4, step: 0.1 },
+    { label: 'Complexity', key: 'complexity', min: 1, max: 6, step: 1 },
+  ],
+  plasma: [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 2, step: 0.01 },
+    { label: 'Scale', key: 'scale', min: 0.3, max: 2.5, step: 0.1 },
+    { label: 'Complexity', key: 'complexity', min: 1, max: 6, step: 1 },
+    { label: 'Saturation', key: 'saturation', min: 0.2, max: 2, step: 0.1 },
+  ],
+  geometric: [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.5, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 2, step: 0.01 },
+    { label: 'Scale', key: 'scale', min: 0.3, max: 2.5, step: 0.1 },
+    { label: 'Rotation', key: 'rotation', min: 0, max: 2, step: 0.1 },
+    { label: 'Glow', key: 'glow', min: 0, max: 1.5, step: 0.01 },
   ],
 };
 
@@ -159,10 +214,81 @@ function particleGalaxyToSettings(
   };
 }
 
+function vortexToSettings(presetId: VortexPresetId): Required<VortexEffectProps> {
+  const preset = vortexPresets[presetId];
+  return {
+    color1: preset.color1,
+    color2: preset.color2,
+    color3: preset.color3,
+    speed: preset.speed,
+    intensity: preset.intensity,
+    arms: preset.arms,
+    twist: preset.twist,
+    zoom: preset.zoom,
+  };
+}
+
+function wavePlaneToSettings(presetId: WavePlanePresetId): Required<WavePlaneEffectProps> {
+  const preset = wavePlanePresets[presetId];
+  return {
+    color1: preset.color1,
+    color2: preset.color2,
+    color3: preset.color3,
+    speed: preset.speed,
+    amplitude: preset.amplitude,
+    frequency: preset.frequency,
+    complexity: preset.complexity,
+  };
+}
+
+function plasmaToSettings(presetId: PlasmaPresetId): Required<PlasmaEffectProps> {
+  const preset = plasmaPresets[presetId];
+  return {
+    color1: preset.color1,
+    color2: preset.color2,
+    color3: preset.color3,
+    speed: preset.speed,
+    intensity: preset.intensity,
+    scale: preset.scale,
+    complexity: preset.complexity,
+    saturation: preset.saturation,
+  };
+}
+
+function geometricToSettings(presetId: GeometricPresetId): Required<GeometricEffectProps> {
+  const preset = geometricPresets[presetId];
+  return {
+    color1: preset.color1,
+    color2: preset.color2,
+    color3: preset.color3,
+    speed: preset.speed,
+    intensity: preset.intensity,
+    scale: preset.scale,
+    rotation: preset.rotation,
+    glow: preset.glow,
+    shape: preset.shape,
+  };
+}
+
 type EffectState = {
-  preset: AuroraPresetId | FluidGradientPresetId | ParticleGalaxyPresetId | StarfieldPresetId;
+  preset:
+    | AuroraPresetId
+    | FluidGradientPresetId
+    | ParticleGalaxyPresetId
+    | StarfieldPresetId
+    | VortexPresetId
+    | WavePlanePresetId
+    | PlasmaPresetId
+    | GeometricPresetId;
   settings: Required<
-    AuroraEffectProps | FluidGradientEffectProps | ParticleGalaxyEffectProps | StarfieldEffectProps
+    | AuroraEffectProps
+    | FluidGradientEffectProps
+    | ParticleGalaxyEffectProps
+    | StarfieldEffectProps
+    | VortexEffectProps
+    | WavePlaneEffectProps
+    | PlasmaEffectProps
+    | GeometricEffectProps
   >;
 };
 
@@ -172,6 +298,10 @@ function initialEffectsState(): Record<EffectId, EffectState> {
     'fluid-gradient': { preset: 'prism' as const, settings: fluidToSettings('prism') },
     'particle-galaxy': { preset: 'nebula' as const, settings: particleGalaxyToSettings('nebula') },
     starfield: { preset: 'cruise' as const, settings: starfieldToSettings('cruise') },
+    vortex: { preset: 'whirlpool' as const, settings: vortexToSettings('whirlpool') },
+    'wave-plane': { preset: 'ocean' as const, settings: wavePlaneToSettings('ocean') },
+    plasma: { preset: 'nebula' as const, settings: plasmaToSettings('nebula') },
+    geometric: { preset: 'nebulaKnot' as const, settings: geometricToSettings('nebulaKnot') },
   };
 }
 
@@ -192,7 +322,15 @@ export function App() {
             ? fluidToSettings
             : id === 'particle-galaxy'
               ? particleGalaxyToSettings
-              : starfieldToSettings;
+              : id === 'vortex'
+                ? vortexToSettings
+                : id === 'wave-plane'
+                  ? wavePlaneToSettings
+                  : id === 'plasma'
+                    ? plasmaToSettings
+                    : id === 'geometric'
+                      ? geometricToSettings
+                      : starfieldToSettings;
 
       setEffects((prev) => ({
         ...prev,
@@ -242,6 +380,26 @@ export function App() {
     if (selectedEffect === 'particle-galaxy') {
       const gs = s as Required<ParticleGalaxyEffectProps>;
       return `<ParticleGalaxyEffect preset="${p}" color1="${gs.color1}" color2="${gs.color2}" speed={${gs.speed.toFixed(2)}} arms={${gs.arms}} />`;
+    }
+
+    if (selectedEffect === 'vortex') {
+      const vs = s as Required<VortexEffectProps>;
+      return `<VortexEffect preset="${p}" color1="${vs.color1}" color2="${vs.color2}" speed={${vs.speed.toFixed(2)}} arms={${vs.arms}} twist={${vs.twist.toFixed(2)}} />`;
+    }
+
+    if (selectedEffect === 'wave-plane') {
+      const ws = s as Required<WavePlaneEffectProps>;
+      return `<WavePlaneEffect preset="${p}" color1="${ws.color1}" color2="${ws.color2}" speed={${ws.speed.toFixed(2)}} amplitude={${ws.amplitude.toFixed(2)}} frequency={${ws.frequency.toFixed(1)}} />`;
+    }
+
+    if (selectedEffect === 'plasma') {
+      const ps = s as Required<PlasmaEffectProps>;
+      return `<PlasmaEffect preset="${p}" color1="${ps.color1}" color2="${ps.color2}" speed={${ps.speed.toFixed(2)}} complexity={${ps.complexity}} />`;
+    }
+
+    if (selectedEffect === 'geometric') {
+      const gs = s as Required<GeometricEffectProps>;
+      return `<GeometricEffect preset="${p}" color1="${gs.color1}" color2="${gs.color2}" speed={${gs.speed.toFixed(2)}} glow={${gs.glow.toFixed(2)}} />`;
     }
 
     const as = s as Required<AuroraEffectProps>;
