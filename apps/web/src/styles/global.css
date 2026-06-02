@@ -476,14 +476,25 @@ input:focus-visible {
 }
 
 .control-deck {
+  max-height: calc(100vh - 6rem);
+  overflow: hidden;
+  padding: 0;
+}
+
+.control-deck-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
   display: grid;
   gap: 1rem;
   align-content: start;
-  max-height: calc(100vh - 6rem);
-  overflow-y: auto;
   padding: 1rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+}
+
+.control-deck-scroll > * {
+  min-width: 0;
 }
 
 .effect-selector {
@@ -493,7 +504,9 @@ input:focus-visible {
 
 .effect-select {
   width: 100%;
-  padding: 0.55rem 0.7rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 1.8rem 0.55rem 0.7rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--panel-soft);

@@ -41,28 +41,30 @@ export function EffectPlayground({
         <div className="playground-visual">{visual}</div>
 
         <aside className="control-deck" aria-label="Effects, presets and controls">
-          {effectTabs}
+          <div className="control-deck-scroll">
+            {effectTabs}
 
-          <div className="deck-header">
-            <div>
-              <p>{activeEffect.status}</p>
-              <h3>{activeEffect.label}</h3>
+            <div className="deck-header">
+              <div>
+                <p>{activeEffect.status}</p>
+                <h3>{activeEffect.label}</h3>
+              </div>
+              <span>{activePresetLabel}</span>
             </div>
-            <span>{activePresetLabel}</span>
+
+            <p className="preset-description">{activeEffect.concept}</p>
+            <p className="preset-description compact-description">{activePresetConcept}</p>
+
+            <div className="preset-grid" aria-label="Preset selection">
+              {presets}
+            </div>
+
+            {controls}
+
+            {metricsToggle}
+
+            <SnippetPanel snippet={snippet} />
           </div>
-
-          <p className="preset-description">{activeEffect.concept}</p>
-          <p className="preset-description compact-description">{activePresetConcept}</p>
-
-          <div className="preset-grid" aria-label="Preset selection">
-            {presets}
-          </div>
-
-          {controls}
-
-          {metricsToggle}
-
-          <SnippetPanel snippet={snippet} />
         </aside>
       </div>
     </section>
