@@ -1019,3 +1019,16 @@ input:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+.effect-loading {
+  width: 100%;
+  min-height: 300px;
+  background: linear-gradient(135deg, var(--bg-mid) 0%, var(--bg-deep) 50%, var(--bg-mid) 100%);
+  background-size: 200% 200%;
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}

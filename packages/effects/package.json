@@ -4,7 +4,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./aurora": "./src/effect-aurora/AuroraEffect.tsx",
+    "./fluid-gradient": "./src/effect-fluid-gradient/FluidGradientEffect.tsx",
+    "./geometric": "./src/effect-geometric/GeometricEffect.tsx",
+    "./particle-galaxy": "./src/effect-particle-galaxy/ParticleGalaxyEffect.tsx",
+    "./plasma": "./src/effect-plasma/PlasmaEffect.tsx",
+    "./starfield": "./src/effect-starfield/StarfieldEffect.tsx",
+    "./vortex": "./src/effect-vortex/VortexEffect.tsx",
+    "./wave-plane": "./src/effect-wave-plane/WavePlaneEffect.tsx"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
