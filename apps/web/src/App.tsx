@@ -32,7 +32,7 @@ import {
   type WavePlanePresetId,
   wavePlanePresets,
 } from '@nebula/effects';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ControlPanel } from './components/ControlPanel';
 import { DeveloperHandOff } from './components/DeveloperHandOff';
@@ -305,10 +305,50 @@ function initialEffectsState(): Record<EffectId, EffectState> {
   };
 }
 
+const STORAGE_KEY_CUSTOM = 'nebula:customPresets';
+
+interface CustomPresetEntry {
+  label: string;
+  effectId: EffectId;
+  preset: string;
+  settings: Record<string, number | string>;
+}
+
+function loadCustomPresets(): Record<string, CustomPresetEntry> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_CUSTOM);
+    return raw ? (JSON.parse(raw) as Record<string, CustomPresetEntry>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCustomPresets(presets: Record<string, CustomPresetEntry>) {
+  try {
+    localStorage.setItem(STORAGE_KEY_CUSTOM, JSON.stringify(presets));
+  } catch {
+    /* storage full or unavailable */
+  }
+}
+
 export function App() {
   const [selectedEffect, setSelectedEffect] = useState<EffectId>('aurora');
   const [effects, setEffects] = useState(initialEffectsState);
   const [showMetrics, toggleMetrics] = usePerformanceToggle();
+  const [fading, setFading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [customPresets, setCustomPresets] = useState(loadCustomPresets);
+  const [savingName, setSavingName] = useState('');
+  const prevEffectRef = useRef(selectedEffect);
+
+  useEffect(() => {
+    if (prevEffectRef.current !== selectedEffect) {
+      setFading(true);
+      const timer = setTimeout(() => setFading(false), 280);
+      prevEffectRef.current = selectedEffect;
+      return () => clearTimeout(timer);
+    }
+  }, [selectedEffect]);
 
   const current = effects[selectedEffect];
 
@@ -407,55 +447,156 @@ export function App() {
   }, [current, selectedEffect]);
 
   function renderEffectTabs() {
-    return (
-      <div className="effect-switcher" aria-label="Effect selection">
-        {effectIds.map((effectId) => {
-          const effect = effectRegistry[effectId];
+    const filtered = effectIds.filter((effectId) => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      const e = effectRegistry[effectId];
+      return (
+        e.label.toLowerCase().includes(q) ||
+        e.shortLabel.toLowerCase().includes(q) ||
+        e.concept.toLowerCase().includes(q) ||
+        e.technique.toLowerCase().includes(q) ||
+        e.tagline.toLowerCase().includes(q)
+      );
+    });
 
-          return (
-            <button
-              key={effectId}
-              type="button"
-              aria-pressed={selectedEffect === effectId}
-              onClick={() => setSelectedEffect(effectId)}
-            >
-              <span>{effect.shortLabel}</span>
-              <small>{effect.presetCount} presets</small>
-            </button>
-          );
-        })}
-      </div>
+    return (
+      <>
+        <input
+          type="search"
+          className="effect-search"
+          placeholder="Filter effects…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search effects"
+        />
+        <div className="effect-switcher" aria-label="Effect selection">
+          {filtered.map((effectId) => {
+            const effect = effectRegistry[effectId];
+
+            return (
+              <button
+                key={effectId}
+                type="button"
+                aria-pressed={selectedEffect === effectId}
+                onClick={() => setSelectedEffect(effectId)}
+              >
+                <span>{effect.shortLabel}</span>
+                <small>{effect.presetCount} presets</small>
+              </button>
+            );
+          })}
+        </div>
+      </>
     );
   }
 
   function renderPresetGrid() {
     const config = presetConfig[selectedEffect];
     const effectPresets = config.presets;
+    const customForEffect = Object.entries(customPresets).filter(
+      ([, cp]) => cp.effectId === selectedEffect,
+    );
 
-    return config.ids.map((presetId) => {
-      const preset = effectPresets[presetId];
-      const isActive = presetId === current.preset;
-      const background =
-        config.swatch === 'radial'
-          ? `radial-gradient(circle, ${preset.color1}, ${preset.color2} 42%, transparent 72%)`
-          : `linear-gradient(135deg, ${preset.color1}, ${preset.color2} 55%, ${preset.color3 ?? preset.color1})`;
+    const handleSaveCustom = () => {
+      const label = savingName.trim() || `Custom ${Date.now() % 10000}`;
+      const id = `custom:${selectedEffect}:${label}`;
+      const s = current.settings as unknown as Record<string, number | string>;
+      const serialized: Record<string, number | string> = {};
+      for (const control of controlConfig[selectedEffect]) {
+        const v = s[control.key];
+        if (v !== undefined) serialized[control.key] = v;
+      }
 
-      return (
-        <button
-          key={presetId}
-          type="button"
-          className="preset-button"
-          aria-pressed={isActive}
-          onClick={() => setCurrentPreset(presetId)}
-        >
-          <span
-            className={`preset-swatch${config.swatch === 'radial' ? ' star-swatch' : ''}`}
-            style={{ background }}
+      const updated = {
+        ...customPresets,
+        [id]: { label, effectId: selectedEffect, preset: current.preset, settings: serialized },
+      };
+      setCustomPresets(updated);
+      saveCustomPresets(updated);
+      setSavingName('');
+    };
+
+    const handleDeleteCustom = (id: string) => {
+      const updated = { ...customPresets };
+      delete updated[id];
+      setCustomPresets(updated);
+      saveCustomPresets(updated);
+    };
+
+    return (
+      <>
+        {config.ids.map((presetId) => {
+          const preset = effectPresets[presetId];
+          const isActive = presetId === current.preset;
+          const background =
+            config.swatch === 'radial'
+              ? `radial-gradient(circle, ${preset.color1}, ${preset.color2} 42%, transparent 72%)`
+              : `linear-gradient(135deg, ${preset.color1}, ${preset.color2} 55%, ${preset.color3 ?? preset.color1})`;
+
+          return (
+            <button
+              key={presetId}
+              type="button"
+              className="preset-button"
+              aria-pressed={isActive}
+              onClick={() => setCurrentPreset(presetId)}
+            >
+              <span
+                className={`preset-swatch${config.swatch === 'radial' ? ' star-swatch' : ''}`}
+                style={{ background }}
+              />
+              <span>{preset.label}</span>
+            </button>
+          );
+        })}
+        {customForEffect.map(([id, cp]) => {
+          const isActive = id === current.preset;
+          return (
+            <div key={id} className="preset-button preset-button--custom">
+              <button
+                type="button"
+                className="preset-button-inner"
+                aria-pressed={isActive}
+                onClick={() => {
+                  setCurrentPreset(id);
+                  setEffects((prev) => ({
+                    ...prev,
+                    [selectedEffect]: { preset: id as never, settings: cp.settings as never },
+                  }));
+                }}
+              >
+                <span className="preset-swatch preset-swatch--custom">★</span>
+                <span>{cp.label}</span>
+              </button>
+              <button
+                type="button"
+                className="preset-delete"
+                aria-label={`Delete ${cp.label}`}
+                onClick={() => handleDeleteCustom(id)}
+              >
+                ×
+              </button>
+            </div>
+          );
+        })}
+        <div className="preset-save-row">
+          <input
+            type="text"
+            className="preset-save-input"
+            placeholder="Save current as…"
+            value={savingName}
+            onChange={(e) => setSavingName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveCustom();
+            }}
           />
-          <span>{preset.label}</span>
-        </button>
-      );
-    });
+          <button type="button" className="preset-save-btn" onClick={handleSaveCustom}>
+            Save
+          </button>
+        </div>
+      </>
+    );
   }
 
   function renderControls() {
@@ -487,7 +628,7 @@ export function App() {
         selectedEffect={selectedEffect}
         totalPresetCount={totalPresetCount}
         visual={
-          <VisualCanvas className="hero-visual" label="Featured WebGL effect">
+          <VisualCanvas className="hero-visual" fading={fading} label="Featured WebGL effect">
             {activeVisual}
           </VisualCanvas>
         }
@@ -519,7 +660,11 @@ export function App() {
         presets={renderPresetGrid()}
         snippet={snippet}
         visual={
-          <VisualCanvas className="playground-canvas" label="Interactive effect preview">
+          <VisualCanvas
+            className="playground-canvas"
+            fading={fading}
+            label="Interactive effect preview"
+          >
             {activeVisual}
           </VisualCanvas>
         }

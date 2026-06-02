@@ -6,12 +6,21 @@ import { CanvasErrorBoundary } from './CanvasErrorBoundary';
 interface VisualCanvasProps {
   children: ReactNode;
   className?: string;
+  fading?: boolean;
   label: string;
 }
 
-export function VisualCanvas({ children, className = '', label }: VisualCanvasProps) {
+export function VisualCanvas({
+  children,
+  className = '',
+  fading = false,
+  label,
+}: VisualCanvasProps) {
   return (
-    <div className={`visual-canvas-frame ${className}`} aria-label={label}>
+    <div
+      className={`visual-canvas-frame ${className}${fading ? ' is-fading' : ''}`}
+      aria-label={label}
+    >
       <CanvasErrorBoundary label={label}>
         <Canvas
           className="nebula-canvas"

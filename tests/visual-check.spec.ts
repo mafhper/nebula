@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
-function captureFailures(page: Page) {
+export function captureFailures(page: Page) {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
 
@@ -14,7 +14,7 @@ function captureFailures(page: Page) {
   return { consoleErrors, pageErrors };
 }
 
-async function readCanvasStats(page: Page) {
+export async function readCanvasStats(page: Page) {
   return page.evaluate(() => {
     const canvases = Array.from(document.querySelectorAll('canvas'));
     const canvas =
