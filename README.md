@@ -20,8 +20,9 @@ React component shapes.
 | Wave Plane      | Vertex shader displacement and normals                   | Preview |
 | Plasma Field    | Plasma algorithm, HSV cycling, layered noise             | Preview |
 | Geometric Shape | Three.js primitives with vertex pulsing and fresnel glow | Preview |
+| Lava Lamp       | Metaball SDF, edge glow, additive blending               | Preview |
 
-The project currently exposes **55 curated presets** across these 8 effects.
+The project currently exposes **63 curated presets** across these 9 effects.
 
 [🔗 Live demo](https://mafhper.github.io/nebula/)
 

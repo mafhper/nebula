@@ -11,6 +11,7 @@
     "./particle-galaxy": "./src/effect-particle-galaxy/ParticleGalaxyEffect.tsx",
     "./plasma": "./src/effect-plasma/PlasmaEffect.tsx",
     "./starfield": "./src/effect-starfield/StarfieldEffect.tsx",
+    "./lava-lamp": "./src/effect-lava-lamp/LavaLampEffect.tsx",
     "./vortex": "./src/effect-vortex/VortexEffect.tsx",
     "./wave-plane": "./src/effect-wave-plane/WavePlaneEffect.tsx"
   },

@@ -5,6 +5,8 @@ import {
   fluidGradientPresets,
   type GeometricEffectProps,
   geometricPresets,
+  type LavaLampEffectProps,
+  lavaLampPresets,
   type ParticleGalaxyEffectProps,
   particleGalaxyPresets,
   type PlasmaEffectProps,
@@ -186,10 +188,31 @@ const geometric: EffectSettingsAdapter = {
   },
 };
 
+const lavaLamp: EffectSettingsAdapter = {
+  toSettings: (id) => {
+    const p = lavaLampPresets[id as keyof typeof lavaLampPresets];
+    return {
+      color1: p.color1,
+      color2: p.color2,
+      color3: p.color3,
+      speed: p.speed,
+      intensity: p.intensity,
+      blobCount: p.blobCount,
+      scale: p.scale,
+      glow: p.glow,
+    };
+  },
+  toSnippet: (preset, s) => {
+    const ls = s as Required<LavaLampEffectProps>;
+    return `<LavaLampEffect preset="${preset}" color1="${ls.color1}" color2="${ls.color2}" speed={${ls.speed.toFixed(2)}} blobCount={${ls.blobCount}} glow={${ls.glow.toFixed(2)}} />`;
+  },
+};
+
 export const effectSettingsMap: Record<EffectId, EffectSettingsAdapter> = {
   aurora,
   'fluid-gradient': fluidGradient,
   geometric,
+  'lava-lamp': lavaLamp,
   'particle-galaxy': particleGalaxy,
   plasma,
   starfield,

@@ -2,6 +2,7 @@ import {
   auroraPresets,
   fluidGradientPresets,
   geometricPresets,
+  lavaLampPresets,
   particleGalaxyPresets,
   plasmaPresets,
   starfieldPresets,
@@ -26,6 +27,7 @@ import {
   effectRegistry,
   fluidPresetIds,
   geometricPresetIds,
+  lavaLampPresetIds,
   particleGalaxyPresetIds,
   plasmaPresetIds,
   starfieldPresetIds,
@@ -49,6 +51,7 @@ const presetConfig: Record<
   aurora: { ids: auroraPresetIds, presets: auroraPresets, swatch: 'linear' },
   'fluid-gradient': { ids: fluidPresetIds, presets: fluidGradientPresets, swatch: 'linear' },
   geometric: { ids: geometricPresetIds, presets: geometricPresets, swatch: 'radial' },
+  'lava-lamp': { ids: lavaLampPresetIds, presets: lavaLampPresets, swatch: 'radial' },
   'particle-galaxy': {
     ids: particleGalaxyPresetIds,
     presets: particleGalaxyPresets,
@@ -70,6 +73,9 @@ const effectComponents: Record<
   ),
   geometric: lazy(() =>
     import('@nebula/effects/geometric').then((m) => ({ default: m.GeometricEffect })),
+  ),
+  'lava-lamp': lazy(() =>
+    import('@nebula/effects/lava-lamp').then((m) => ({ default: m.LavaLampEffect })),
   ),
   'particle-galaxy': lazy(() =>
     import('@nebula/effects/particle-galaxy').then((m) => ({ default: m.ParticleGalaxyEffect })),
@@ -145,6 +151,13 @@ const controlConfig: Record<EffectId, ControlConfig> = {
     { label: 'Rotation', key: 'rotation', min: 0, max: 2, step: 0.1 },
     { label: 'Glow', key: 'glow', min: 0, max: 1.5, step: 0.01 },
   ],
+  'lava-lamp': [
+    { label: 'Speed', key: 'speed', min: 0, max: 1.2, step: 0.01 },
+    { label: 'Intensity', key: 'intensity', min: 0, max: 2, step: 0.01 },
+    { label: 'Blobs', key: 'blobCount', min: 3, max: 8, step: 1 },
+    { label: 'Scale', key: 'scale', min: 0.4, max: 2, step: 0.1 },
+    { label: 'Glow', key: 'glow', min: 0, max: 1.5, step: 0.01 },
+  ],
 };
 
 type EffectState = {
@@ -173,6 +186,10 @@ function initialEffectsState(): Record<EffectId, EffectState> {
     geometric: {
       preset: 'nebulaKnot',
       settings: effectSettingsMap.geometric.toSettings('nebulaKnot'),
+    },
+    'lava-lamp': {
+      preset: 'retro',
+      settings: effectSettingsMap['lava-lamp'].toSettings('retro'),
     },
   };
 }

@@ -5,6 +5,8 @@ import {
   fluidGradientPresets,
   type GeometricPresetId,
   geometricPresets,
+  type LavaLampPresetId,
+  lavaLampPresets,
   type ParticleGalaxyPresetId,
   particleGalaxyPresets,
   type PlasmaPresetId,
@@ -21,6 +23,7 @@ export type EffectId =
   | 'aurora'
   | 'fluid-gradient'
   | 'geometric'
+  | 'lava-lamp'
   | 'particle-galaxy'
   | 'plasma'
   | 'starfield'
@@ -48,6 +51,7 @@ export interface EffectMeta {
 export const auroraPresetIds = Object.keys(auroraPresets) as AuroraPresetId[];
 export const fluidPresetIds = Object.keys(fluidGradientPresets) as FluidGradientPresetId[];
 export const geometricPresetIds = Object.keys(geometricPresets) as GeometricPresetId[];
+export const lavaLampPresetIds = Object.keys(lavaLampPresets) as LavaLampPresetId[];
 export const particleGalaxyPresetIds = Object.keys(
   particleGalaxyPresets,
 ) as ParticleGalaxyPresetId[];
@@ -177,6 +181,21 @@ export const effectRegistry: Record<EffectId, EffectMeta> = {
     docsPath: '#learn',
     githubPath: 'packages/effects/src/effect-geometric',
   },
+  'lava-lamp': {
+    id: 'lava-lamp',
+    label: 'Lava Lamp',
+    shortLabel: 'Lava',
+    componentName: 'LavaLampEffect',
+    status: 'preview',
+    tagline: 'Merging metaballs',
+    concept: 'Blobs orgânicos que se fundem com metaballs e glow.',
+    technique: 'Fullscreen shader, metaball SDF, edge glow and additive blending.',
+    bestFor: ['Ambient backgrounds', 'Retro UI', 'Relaxation interfaces'],
+    presetCount: lavaLampPresetIds.length,
+    defaultPreset: 'retro',
+    docsPath: '#learn',
+    githubPath: 'packages/effects/src/effect-lava-lamp',
+  },
 };
 
 export const effectIds = Object.keys(effectRegistry) as EffectId[];
@@ -184,6 +203,7 @@ export const totalPresetCount =
   auroraPresetIds.length +
   fluidPresetIds.length +
   geometricPresetIds.length +
+  lavaLampPresetIds.length +
   particleGalaxyPresetIds.length +
   plasmaPresetIds.length +
   starfieldPresetIds.length +
@@ -209,7 +229,14 @@ export const milestones = [
   {
     title: 'Expansion',
     status: 'Preview',
-    items: ['Particle Galaxy', 'Spiral Vortex', 'Wave Plane', 'Plasma Field', 'Geometric Shape'],
+    items: [
+      'Particle Galaxy',
+      'Spiral Vortex',
+      'Wave Plane',
+      'Plasma Field',
+      'Geometric Shape',
+      'Lava Lamp',
+    ],
   },
 ];
 
@@ -253,6 +280,11 @@ export const effectRoadmap = [
     name: 'Geometric Shape',
     status: 'Preview',
     concept: 'Three.js primitives with vertex pulsing and fresnel glow.',
+  },
+  {
+    name: 'Lava Lamp',
+    status: 'Preview',
+    concept: 'Metaball blobs, edge glow, additive blending.',
   },
 ];
 

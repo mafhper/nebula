@@ -11,6 +11,7 @@ const effects = [
   { id: 'wave-plane', label: 'Waves', preset: 'Ocean' },
   { id: 'plasma', label: 'Plasma', preset: 'Nebula' },
   { id: 'geometric', label: 'Geo', preset: 'Nebula Knot' },
+  { id: 'lava-lamp', label: 'Lava', preset: 'Retro' },
 ] as const;
 
 async function waitForNonblankCanvas(page: import('@playwright/test').Page, retries = 3) {

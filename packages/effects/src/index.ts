@@ -25,6 +25,14 @@ export type {
   GeometricShape,
   GeometricUniforms,
 } from './effect-geometric/types';
+export { lavaLampControls } from './effect-lava-lamp/controls';
+export type { LavaLampPresetId } from './effect-lava-lamp/presets';
+export { lavaLampPresets } from './effect-lava-lamp/presets';
+export type {
+  LavaLampEffectProps,
+  LavaLampPreset,
+  LavaLampUniforms,
+} from './effect-lava-lamp/types';
 export { particleGalaxyControls } from './effect-particle-galaxy/controls';
 export type { ParticleGalaxyPresetId } from './effect-particle-galaxy/presets';
 export { particleGalaxyPresets } from './effect-particle-galaxy/presets';
