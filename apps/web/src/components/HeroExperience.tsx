@@ -27,6 +27,14 @@ export function HeroExperience({
 
       <div className="site-nav" aria-label="Primary navigation">
         <a href="#top" className="brand-mark">
+          <img
+            className="brand-logo"
+            src={`${import.meta.env.BASE_URL}logo.png`}
+            alt=""
+            width={30}
+            height={30}
+            aria-hidden="true"
+          />
           Nebula
         </a>
         <nav>
@@ -42,7 +50,9 @@ export function HeroExperience({
       <div className="hero-content">
         <div className="hero-copy">
           <p className="product-kicker">Shader-first visual library</p>
-          <h1>WebGL effects for React interfaces.</h1>
+          <h1>
+            <span className="grad-text">WebGL effects</span> for React interfaces.
+          </h1>
           <p>
             Nebula is an open-source collection of polished GPU effects that can be explored, tuned
             and reused as React components.

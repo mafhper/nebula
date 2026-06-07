@@ -63,29 +63,63 @@ const presetConfig: Record<
   'wave-plane': { ids: wavePlanePresetIds, presets: wavePlanePresets, swatch: 'linear' },
 };
 
+const CHUNK_RELOAD_KEY = 'nebula:chunkReloaded';
+
+/**
+ * Wrap a dynamic import so a failed chunk fetch (dev server restart, port
+ * change, or a fresh production deploy that invalidated old chunk URLs) does
+ * not crash the whole React tree. On the first failure we reload the page once
+ * to pull fresh module URLs; a sessionStorage guard prevents reload loops.
+ */
+function lazyWithReload<T extends React.ComponentType<Record<string, unknown>>>(
+  factory: () => Promise<{ default: T }>,
+): React.LazyExoticComponent<T> {
+  return lazy(() =>
+    factory().catch((error: unknown) => {
+      try {
+        if (typeof window !== 'undefined' && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+          sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+          window.location.reload();
+          // Keep the import pending while the page reloads.
+          return new Promise<{ default: T }>(() => {});
+        }
+      } catch {
+        /* storage unavailable — fall through to the error boundary */
+      }
+      throw error;
+    }),
+  );
+}
+
 const effectComponents: Record<
   string,
   React.LazyExoticComponent<React.ComponentType<Record<string, unknown>>>
 > = {
-  aurora: lazy(() => import('@nebula/effects/aurora').then((m) => ({ default: m.AuroraEffect }))),
-  'fluid-gradient': lazy(() =>
+  aurora: lazyWithReload(() =>
+    import('@nebula/effects/aurora').then((m) => ({ default: m.AuroraEffect })),
+  ),
+  'fluid-gradient': lazyWithReload(() =>
     import('@nebula/effects/fluid-gradient').then((m) => ({ default: m.FluidGradientEffect })),
   ),
-  geometric: lazy(() =>
+  geometric: lazyWithReload(() =>
     import('@nebula/effects/geometric').then((m) => ({ default: m.GeometricEffect })),
   ),
-  'lava-lamp': lazy(() =>
+  'lava-lamp': lazyWithReload(() =>
     import('@nebula/effects/lava-lamp').then((m) => ({ default: m.LavaLampEffect })),
   ),
-  'particle-galaxy': lazy(() =>
+  'particle-galaxy': lazyWithReload(() =>
     import('@nebula/effects/particle-galaxy').then((m) => ({ default: m.ParticleGalaxyEffect })),
   ),
-  plasma: lazy(() => import('@nebula/effects/plasma').then((m) => ({ default: m.PlasmaEffect }))),
-  starfield: lazy(() =>
+  plasma: lazyWithReload(() =>
+    import('@nebula/effects/plasma').then((m) => ({ default: m.PlasmaEffect })),
+  ),
+  starfield: lazyWithReload(() =>
     import('@nebula/effects/starfield').then((m) => ({ default: m.StarfieldEffect })),
   ),
-  vortex: lazy(() => import('@nebula/effects/vortex').then((m) => ({ default: m.VortexEffect }))),
-  'wave-plane': lazy(() =>
+  vortex: lazyWithReload(() =>
+    import('@nebula/effects/vortex').then((m) => ({ default: m.VortexEffect })),
+  ),
+  'wave-plane': lazyWithReload(() =>
     import('@nebula/effects/wave-plane').then((m) => ({ default: m.WavePlaneEffect })),
   ),
 };
@@ -230,6 +264,16 @@ export function App() {
   const [customPresets, setCustomPresets] = useState(loadCustomPresets);
   const [savingName, setSavingName] = useState('');
   const prevEffectRef = useRef(selectedEffect);
+
+  // App rendered successfully: clear the chunk-reload guard so a later chunk
+  // failure is allowed to recover with a fresh reload again.
+  useEffect(() => {
+    try {
+      sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
 
   useEffect(() => {
     if (prevEffectRef.current !== selectedEffect) {
@@ -531,6 +575,14 @@ export function App() {
         <div className="footer-inner">
           <div>
             <a href="#top" className="brand-mark">
+              <img
+                className="brand-logo"
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt=""
+                width={30}
+                height={30}
+                aria-hidden="true"
+              />
               Nebula
             </a>
             <p>Open-source WebGL effect lab for React, R3F and GLSL interfaces.</p>

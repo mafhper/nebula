@@ -54,38 +54,52 @@ export function EffectPlayground({
 
       <div className="playground-layout">
         <div className="playground-stage">
-          <div className="stage-toolbar">
-            <div>
-              <p>{activeEffect.tagline}</p>
-              <h3>{activeEffect.label}</h3>
+          <div className="playground-visual">
+            <div className="stage-toolbar">
+              <div>
+                <p>{activeEffect.tagline}</p>
+                <h3>{activeEffect.label}</h3>
+              </div>
+              {metricsToggle}
             </div>
-            {metricsToggle}
+            {visual}
           </div>
-          <div className="playground-visual">{visual}</div>
         </div>
 
         <aside className="control-deck" aria-label="Effects, presets and controls">
           <div className="control-deck-scroll">
-            {effectTabs}
-
-            <div className="deck-header">
-              <div>
-                <p>{activeEffect.status}</p>
-                <strong className="deck-title">{activeEffect.label}</strong>
+            <div className="effect-selector-block">
+              <div className="deck-header">
+                <div>
+                  <p>Effect</p>
+                  <strong className="deck-title">{activeEffect.label}</strong>
+                </div>
+                <span className="status-badge" data-status={activeEffect.status.toLowerCase()}>
+                  {activeEffect.status}
+                </span>
               </div>
-              <span>{activePresetLabel}</span>
+              {effectTabs}
+              <p className="preset-description">{activePresetConcept || activeEffect.concept}</p>
             </div>
 
-            <p className="preset-description">{activeEffect.concept}</p>
-            <p className="preset-description compact-description">{activePresetConcept}</p>
-
-            <div className="preset-grid" aria-label="Preset selection">
-              {presets}
+            <div className="deck-block">
+              <p className="deck-label">
+                <span>Presets</span>
+                <span className="deck-label-hint">{activePresetLabel}</span>
+              </p>
+              <div className="preset-grid" aria-label="Preset selection">
+                {presets}
+              </div>
             </div>
 
-            {controls}
+            <div className="deck-block">
+              <p className="deck-label">Motion</p>
+              {controls}
+            </div>
 
-            <SnippetPanel snippet={snippet} />
+            <div className="deck-block">
+              <SnippetPanel snippet={snippet} />
+            </div>
           </div>
         </aside>
       </div>

@@ -20,11 +20,13 @@ export function ProjectRoadmap() {
 
       <div className="roadmap-list">
         {effectRoadmap.map((effect, index) => (
-          <article key={effect.name} className="roadmap-row">
-            <span>{String(index + 1).padStart(2, '0')}</span>
+          <article key={effect.name} className="roadmap-card">
+            <span className="roadmap-num">{String(index + 1).padStart(2, '0')}</span>
             <h3>{effect.name}</h3>
             <p>{effect.concept}</p>
-            <strong>{effect.status}</strong>
+            <span className="status-badge" data-status={effect.status.toLowerCase()}>
+              {effect.status}
+            </span>
           </article>
         ))}
       </div>

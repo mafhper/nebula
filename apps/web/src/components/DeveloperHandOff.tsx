@@ -19,11 +19,19 @@ export function DeveloperHandOff({ effectIds }: DeveloperHandOffProps) {
       <div className="developer-grid">
         <div className="install-panel">
           <p>Usage now</p>
-          <pre>{`import { AuroraEffect } from '@nebula/effects/aurora';
+          <div className="code-card">
+            <div className="code-card-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <span>AuroraEffect.tsx</span>
+            </div>
+            <pre>{`import { AuroraEffect } from '@nebula/effects/aurora';
 
 <Canvas>
   <AuroraEffect speed={0.32} intensity={1.08} />
 </Canvas>`}</pre>
+          </div>
           <span>Examples currently point at the workspace package shape used by the demo.</span>
 
           <div className="npm-plan" aria-label="Planned npm package">

@@ -62,48 +62,33 @@ export function EffectsGallery({ effectIds, selectedEffect, onSelectEffect }: Ef
           ))}
         </aside>
 
-        <div className="effect-index">
+        <div className="effect-grid">
           {effectIds.map((effectId) => {
             const effect = effectRegistry[effectId];
 
             return (
               <article
                 key={effect.id}
-                className="effect-row"
+                className="effect-card"
                 data-active={selectedEffect === effectId}
+                onClick={() => onSelectEffect(effectId)}
               >
-                <button
-                  type="button"
-                  className="effect-row-main"
-                  aria-pressed={selectedEffect === effectId}
-                  onClick={() => onSelectEffect(effectId)}
-                >
-                  <span>{effect.status}</span>
-                  <strong>{effect.label}</strong>
-                  <small>{effect.tagline}</small>
-                </button>
-
-                <dl className="effect-row-details">
-                  <div>
-                    <dt>Best fit</dt>
-                    <dd>{effect.bestFor.slice(0, 2).join(', ')}</dd>
-                  </div>
-                  <div>
-                    <dt>Rendering idea</dt>
-                    <dd>{effect.concept}</dd>
-                  </div>
-                  <div>
-                    <dt>Presets</dt>
-                    <dd>{effect.presetCount}</dd>
-                  </div>
-                </dl>
-
+                <div className="effect-card-top">
+                  <span className="status-badge" data-status={effect.status.toLowerCase()}>
+                    {effect.status}
+                  </span>
+                  <span className="effect-card-presets">{effect.presetCount} presets</span>
+                </div>
+                <strong>{effect.label}</strong>
+                <small>{effect.tagline}</small>
+                <p className="effect-card-fit">{effect.bestFor.slice(0, 2).join(' · ')}</p>
                 <a
                   href="#playground"
-                  aria-label={`Open ${effect.label}`}
+                  className="effect-card-open"
+                  aria-label={`Open ${effect.label} in playground`}
                   onClick={() => onSelectEffect(effectId)}
                 >
-                  Open
+                  Open in playground →
                 </a>
               </article>
             );
