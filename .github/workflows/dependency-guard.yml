@@ -34,4 +34,12 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Review dependency changes
+        if: ${{ github.event.repository.visibility == 'public' || vars.ENABLE_DEPENDENCY_REVIEW == 'true' }}
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+
+      - name: Dependency review unavailable
+        if: ${{ github.event.repository.visibility != 'public' && vars.ENABLE_DEPENDENCY_REVIEW != 'true' }}
+        run: >
+          echo "Skipping dependency-review-action because this repository is private and
+          ENABLE_DEPENDENCY_REVIEW is not true; npm signature and vulnerability audits
+          above remain required."
