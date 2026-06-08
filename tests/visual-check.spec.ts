@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { captureFailures, readCanvasStats } from './visual-helpers';
+import { captureFailures, waitForNonblankCanvas } from './visual-helpers';
 
 test('nebula canvas renders nonblank pixels', async ({ page }) => {
   test.setTimeout(60_000);
@@ -9,7 +9,7 @@ test('nebula canvas renders nonblank pixels', async ({ page }) => {
   await page.goto('/');
   await page.waitForTimeout(1500);
 
-  const canvasStats = await readCanvasStats(page);
+  const canvasStats = await waitForNonblankCanvas(page);
 
   expect(failures.pageErrors).toEqual([]);
   expect(failures.consoleErrors).toEqual([]);
@@ -47,7 +47,7 @@ test('effect discovery and playground switching work', async ({ page }) => {
 
   await page.waitForTimeout(1500);
 
-  const canvasStats = await readCanvasStats(page);
+  const canvasStats = await waitForNonblankCanvas(page);
 
   expect(failures.pageErrors).toEqual([]);
   expect(failures.consoleErrors).toEqual([]);

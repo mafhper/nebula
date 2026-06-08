@@ -50,9 +50,17 @@ jobs:
           ${{ github.ref_name == 'main' && '--update-snapshots' || '' }}
           --reporter=list
 
+      - name: Upload Playwright failures
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: playwright-results
+          path: output/playwright/results/
+          retention-days: 7
+
       - name: Upload snapshots
         if: github.ref_name == 'main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: playwright-snapshots
           path: tests/**/*-snapshots/
