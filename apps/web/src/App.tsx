@@ -11,6 +11,7 @@ import {
 } from '@nebula/effects';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { ColorField } from './components/ColorField';
 import { ControlPanel } from './components/ControlPanel';
 import { DeveloperHandOff } from './components/DeveloperHandOff';
 import { EffectPlayground } from './components/EffectPlayground';
@@ -254,6 +255,31 @@ function saveCustomPresets(presets: Record<string, CustomPresetEntry>) {
   }
 }
 
+const DEFAULT_BACKGROUND = '#04060d';
+
+/**
+ * Derive a deep, tinted backdrop from a preset's primary color so each preset
+ * sits on a complementary base instead of a single fixed navy. Returns a 7-char
+ * hex (safe for <input type="color">); falls back to the app base on bad input.
+ */
+function deriveBackground(hex: string | undefined): string {
+  if (!hex) return DEFAULT_BACKGROUND;
+  const raw = hex.replace('#', '');
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw;
+  if (full.length !== 6) return DEFAULT_BACKGROUND;
+  const value = Number.parseInt(full, 16);
+  if (!Number.isFinite(value)) return DEFAULT_BACKGROUND;
+  const channel = (shift: number) => Math.round(((value >> shift) & 255) * 0.14);
+  const toHex = (v: number) => v.toString(16).padStart(2, '0');
+  return `#${toHex(channel(16))}${toHex(channel(8))}${toHex(channel(0))}`;
+}
+
 export function App() {
   const [selectedEffect, setSelectedEffect] = useState<EffectId>('aurora');
   const [effects, setEffects] = useState(initialEffectsState);
@@ -263,6 +289,7 @@ export function App() {
   const [fading, setFading] = useState(false);
   const [customPresets, setCustomPresets] = useState(loadCustomPresets);
   const [savingName, setSavingName] = useState('');
+  const [bgOverrides, setBgOverrides] = useState<Partial<Record<EffectId, string>>>({});
   const prevEffectRef = useRef(selectedEffect);
 
   // App rendered successfully: clear the chunk-reload guard so a later chunk
@@ -295,12 +322,48 @@ export function App() {
         ...prev,
         [id]: { preset: presetId, settings: adapter.toSettings(presetId) },
       }));
+      // Drop any manual backdrop so it follows the newly selected preset.
+      setBgOverrides((prev) => {
+        if (prev[id] === undefined) return prev;
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     },
     [selectedEffect],
   );
 
+  const setCurrentBackground = useCallback(
+    (value: string) => {
+      setBgOverrides((prev) => ({ ...prev, [selectedEffect]: value }));
+    },
+    [selectedEffect],
+  );
+
+  const resetCurrentBackground = useCallback(() => {
+    setBgOverrides((prev) => {
+      if (prev[selectedEffect] === undefined) return prev;
+      const next = { ...prev };
+      delete next[selectedEffect];
+      return next;
+    });
+  }, [selectedEffect]);
+
   const setCurrentSetting = useCallback(
     <K extends string>(key: K, value: number) => {
+      setEffects((prev) => ({
+        ...prev,
+        [selectedEffect]: {
+          ...prev[selectedEffect],
+          settings: { ...prev[selectedEffect].settings, [key]: value },
+        },
+      }));
+    },
+    [selectedEffect],
+  );
+
+  const setCurrentColor = useCallback(
+    (key: string, value: string) => {
       setEffects((prev) => ({
         ...prev,
         [selectedEffect]: {
@@ -321,6 +384,15 @@ export function App() {
   const heroPresetId =
     heroPresetIds[heroPresetIndex % heroPresetIds.length] ?? activeEffect.defaultPreset;
   const heroPreset = presetConfig[selectedEffect].presets[heroPresetId] ?? activePreset;
+
+  const defaultBackground = deriveBackground(
+    presetConfig[selectedEffect].presets[current.preset]?.color1,
+  );
+  const isBackgroundCustom = bgOverrides[selectedEffect] !== undefined;
+  const playgroundBackground = bgOverrides[selectedEffect] ?? defaultBackground;
+  const heroBackground = deriveBackground(
+    presetConfig[selectedEffect].presets[heroPresetId]?.color1,
+  );
   const EffectComponent = effectComponents[selectedEffect];
   const heroSettings = useMemo(
     () => effectSettingsMap[selectedEffect].toSettings(heroPresetId),
@@ -513,6 +585,38 @@ export function App() {
     );
   }
 
+  function renderColors() {
+    const settings = current.settings as Record<string, unknown>;
+    const colorKeys = Object.keys(settings).filter(
+      (key) => /^color\d+$/.test(key) && typeof settings[key] === 'string',
+    );
+    const colorLabels: Record<string, string> = {
+      color1: 'Primary',
+      color2: 'Secondary',
+      color3: 'Accent',
+    };
+
+    return (
+      <div className="color-stack">
+        {colorKeys.map((key) => (
+          <ColorField
+            key={key}
+            label={colorLabels[key] ?? key}
+            value={String(settings[key])}
+            onChange={(value) => setCurrentColor(key, value)}
+          />
+        ))}
+        <ColorField
+          label="Backdrop"
+          value={playgroundBackground}
+          onChange={setCurrentBackground}
+          meta={isBackgroundCustom ? 'Custom' : 'From preset'}
+          onReset={isBackgroundCustom ? resetCurrentBackground : undefined}
+        />
+      </div>
+    );
+  }
+
   return (
     <main id="top" className="app-shell">
       <HeroExperience
@@ -526,6 +630,7 @@ export function App() {
             className="hero-visual"
             fading={fading || heroFading}
             label="Featured WebGL effect"
+            background={heroBackground}
           >
             {heroVisual}
           </VisualCanvas>
@@ -550,12 +655,14 @@ export function App() {
           </button>
         }
         presets={renderPresetGrid()}
+        colors={renderColors()}
         snippet={snippet}
         visual={
           <VisualCanvas
             className="playground-canvas"
             fading={fading}
             label="Interactive effect preview"
+            background={playgroundBackground}
           >
             {activeVisual}
           </VisualCanvas>

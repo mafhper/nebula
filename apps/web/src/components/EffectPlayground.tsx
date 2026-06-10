@@ -11,6 +11,7 @@ interface EffectPlaygroundProps {
   effectTabs: ReactNode;
   metricsToggle: ReactNode;
   presets: ReactNode;
+  colors: ReactNode;
   snippet: string;
   visual: ReactNode;
 }
@@ -23,6 +24,7 @@ export function EffectPlayground({
   effectTabs,
   metricsToggle,
   presets,
+  colors,
   snippet,
   visual,
 }: EffectPlaygroundProps) {
@@ -90,6 +92,11 @@ export function EffectPlayground({
               <div className="preset-grid" aria-label="Preset selection">
                 {presets}
               </div>
+            </div>
+
+            <div className="deck-block">
+              <p className="deck-label">Colors</p>
+              {colors}
             </div>
 
             <div className="deck-block">

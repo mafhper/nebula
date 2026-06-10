@@ -9,6 +9,8 @@ interface VisualCanvasProps {
   className?: string;
   fading?: boolean;
   label: string;
+  /** Scene background color. Defaults to the app's deep-space base. */
+  background?: string;
 }
 
 export function VisualCanvas({
@@ -16,11 +18,13 @@ export function VisualCanvas({
   className = '',
   fading = false,
   label,
+  background = '#04060d',
 }: VisualCanvasProps) {
   return (
     <div
       className={`visual-canvas-frame ${className}${fading ? ' is-fading' : ''}`}
       aria-label={label}
+      style={{ background }}
     >
       <CanvasErrorBoundary label={label}>
         <Canvas
@@ -34,7 +38,7 @@ export function VisualCanvas({
           }}
         >
           <Suspense fallback={null}>
-            <color attach="background" args={['#04060d']} />
+            <color attach="background" args={[background]} />
             <PerformanceOptimizer>{children}</PerformanceOptimizer>
           </Suspense>
         </Canvas>
