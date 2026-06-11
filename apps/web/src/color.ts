@@ -43,7 +43,9 @@ export function parseColor(input: string | undefined): RGB | null {
     return { r: clampByte(+rgb[1]), g: clampByte(+rgb[2]), b: clampByte(+rgb[3]) };
   }
 
-  const hsl = s.match(/^hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*(?:,\s*[\d.]+\s*)?\)$/);
+  const hsl = s.match(
+    /^hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*(?:,\s*[\d.]+\s*)?\)$/,
+  );
   if (hsl) {
     return hslToRgb({ h: +hsl[1], s: +hsl[2], l: +hsl[3] });
   }
