@@ -45,10 +45,7 @@ jobs:
         run: ./node_modules/.bin/playwright install --with-deps chromium
 
       - name: Visual test
-        run: >
-          npm run test:visual --
-          ${{ github.ref_name == 'main' && '--update-snapshots' || '' }}
-          --reporter=list
+        run: npm run test:visual -- --reporter=list
 
       - name: Upload Playwright failures
         if: failure()
@@ -56,14 +53,6 @@ jobs:
         with:
           name: playwright-results
           path: output/playwright/results/
-          retention-days: 7
-
-      - name: Upload snapshots
-        if: github.ref_name == 'main'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: playwright-snapshots
-          path: tests/**/*-snapshots/
           retention-days: 7
 
       - name: Build
