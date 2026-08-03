@@ -62,17 +62,17 @@ dependencies.
 
 ## Commands
 
-| Command                                   | Purpose                                               |
-| ----------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                             | Start the Vite development server on port 5173        |
-| `npm run format:check`                    | Check formatting with Prettier                        |
-| `npm run lint`                            | Run ESLint                                            |
-| `npm run type-check`                      | Type-check every workspace                            |
-| `npm test`                                | Run workspace unit tests with Vitest                  |
-| `npm exec playwright -- install chromium` | Install Chromium for local visual tests               |
-| `npm run test:visual`                     | Run Playwright checks on desktop and mobile projects  |
-| `npm run build`                           | Build and type-check all workspaces through Turborepo |
-| `npm run clean`                           | Remove workspace build output                         |
+| Command                                               | Purpose                                               |
+| ----------------------------------------------------- | ----------------------------------------------------- |
+| `npm run dev`                                         | Start the Vite development server on port 5173        |
+| `npm run format:check`                                | Check formatting with Prettier                        |
+| `npm run lint`                                        | Run ESLint                                            |
+| `npm run type-check`                                  | Type-check every workspace                            |
+| `npm test`                                            | Run workspace unit tests with Vitest                  |
+| `npm exec playwright -- install --with-deps chromium` | Install Chromium and its system dependencies          |
+| `npm run test:visual`                                 | Run Playwright checks on desktop and mobile projects  |
+| `npm run build`                                       | Build and type-check all workspaces through Turborepo |
+| `npm run clean`                                       | Remove workspace build output                         |
 
 ## Validation and Security
 
