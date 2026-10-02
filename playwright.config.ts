@@ -6,7 +6,7 @@ export default defineConfig({
   reporter: [['list']],
   workers: process.env.CI ? 1 : undefined,
   use: {
-    baseURL: 'http://127.0.0.1:5173/nebula/',
+    baseURL: 'http://127.0.0.1:5210/nebula/',
     trace: 'retain-on-failure',
   },
   expect: {
@@ -17,7 +17,7 @@ export default defineConfig({
   },
   webServer: {
     command: 'npm run dev',
-    url: 'http://127.0.0.1:5173/nebula/',
+    url: 'http://127.0.0.1:5210/nebula/',
     reuseExistingServer: true,
     timeout: 120_000,
   },
