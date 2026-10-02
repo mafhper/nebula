@@ -31,6 +31,24 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      # A check ".github/dependabot.yml" do GitHub roda SO no push para a main:
+      # um config invalido passa o PR inteiro e so quebra depois do merge. Aqui
+      # a validacao roda no PR, contra o schema oficial.
+      # exit 1 = config invalido (falha). exit 2 = schema indisponivel (aviso):
+      # sem rede o check nao tem o que judging, e vermelho por causa disso seria
+      # alarme falso.
+      - name: Validate Dependabot config
+        run: |
+          set +e
+          node scripts/validar-dependabot.mjs
+          code=$?
+          set -e
+          if [ "$code" -eq 2 ]; then
+            echo "::warning::schema do Dependabot indisponivel; validacao pulada"
+          elif [ "$code" -ne 0 ]; then
+            exit "$code"
+          fi
+
       - name: Lint
         run: npm run lint
 
