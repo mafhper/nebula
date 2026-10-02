@@ -22,10 +22,11 @@ updates:
     # Agrupa patch e minor em UM PR. Sem agrupar, o Dependabot abre um PR por
     # pacote e quatro bumps rotineiros viram quatro PRs para revisar.
     #
-    # Major fica DE FORA de proposito: um salto de major (ex.: typescript
-    # 6.x -> 7.x) muda tipos e pode quebrar o build, entao continua com PR
-    # proprio e atencao propria. Misturar major com patch no mesmo PR
-    # transformaria a revisao do arriscado em um diff de rotina.
+    # Major fica DE FORA do grupo de proposito: um salto de major muda tipos e
+    # pode quebrar o build, entao continua com PR proprio e atencao propria.
+    # Misturar major com patch no mesmo PR transformaria a revisao do
+    # arriscado num diff de rotina. Major bloqueado por incompatibilidade real
+    # entra em `ignore` mais abaixo, com o motivo medido.
     #
     # A opcao "Grouped security updates" das Settings agrupa updates de
     # SEGURANCA, nao de versao. Agrupar versao so neste arquivo.
@@ -36,6 +37,16 @@ updates:
         update-types:
           - patch
           - minor
+    # Major do typescript travado ate o typescript-eslint declarar suporte.
+    # Medido em 2026-10-02: typescript-eslint@8.70.1 declara peer
+    # "typescript >=4.8.4 <6.1.0", entao o TS 7 nao instala --
+    # `npm ci` (o que a CI roda) sai com ERESOLVE. Sem este ignore o
+    # Dependabot reabre o mesmo PR toda semana, sempre nao-mergeavel.
+    # Só remove quando o peer range cobrir a 7.x.
+    ignore:
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /
