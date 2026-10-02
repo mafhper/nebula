@@ -19,6 +19,23 @@ updates:
     # aqui deixa a intencao explicita e impede que um 'disabled' futuro
     # reintroduza o problema em silencio.
     rebase-strategy: auto
+    # Agrupa patch e minor em UM PR. Sem agrupar, o Dependabot abre um PR por
+    # pacote e quatro bumps rotineiros viram quatro PRs para revisar.
+    #
+    # Major fica DE FORA de proposito: um salto de major (ex.: typescript
+    # 6.x -> 7.x) muda tipos e pode quebrar o build, entao continua com PR
+    # proprio e atencao propria. Misturar major com patch no mesmo PR
+    # transformaria a revisao do arriscado em um diff de rotina.
+    #
+    # A opcao "Grouped security updates" das Settings agrupa updates de
+    # SEGURANCA, nao de versao. Agrupar versao so neste arquivo.
+    groups:
+      npm-patch-minor:
+        patterns:
+          - '*'
+        update-types:
+          - patch
+          - minor
 
   - package-ecosystem: github-actions
     directory: /
