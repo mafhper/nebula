@@ -40,4 +40,16 @@ export default tseslint.config(
       'simple-import-sort/imports': 'error',
     },
   },
+  {
+    // Scripts Node versionados (validadores, ferramentas de repo) rodam em
+    // Node, nao no browser. Sem os globals de Node o `no-undef` acusa
+    // `console` e `process` em arquivos que funcionam.
+    files: ['**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
 );
