@@ -13,6 +13,10 @@ updates:
       semver-minor-days: 7
       semver-major-days: 30
     open-pull-requests-limit: 5
+    # Rebase automatico quando a branch fica atrasada. Sem isso o PR passa a
+    # exigir "update branch" na mao e o ruleset (strict up-to-date) recusa o
+    # merge com todos os checks verdes.
+    auto-update: true
 
   - package-ecosystem: github-actions
     directory: /
@@ -24,3 +28,14 @@ updates:
     cooldown:
       default-days: 5
     open-pull-requests-limit: 5
+    auto-update: true
+    # Agrupa TODAS as actions em um PR. Sem agrupar, o Dependabot abre um PR
+    # por acao: o codeql-action/init e o codeql-action/analyze sao fixados no
+    # mesmo SHA e PRECISAM subir juntos, mas cada um virava um PR separado. O
+    # job ficava com versoes misturadas e falhava com
+    # "Loaded a configuration file for version 4.38.0, but running version
+    # 4.38.2" — e mergear qualquer um dos dois isoladamente quebrava a main.
+    groups:
+      github-actions:
+        patterns:
+          - '*'
