@@ -6,7 +6,17 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/*.tsbuildinfo'],
+    // Os diretorios de agente (`.dev/` e afins) sao gitignored, entao o CI nunca
+    // os ve — mas localmente entravam no lint e afogavam os erros reais do
+    // projeto em dezenas de `no-undef`. Ignorar aqui alinha o lint local ao CI.
+    ignores: [
+      '**/dist/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      '**/*.tsbuildinfo',
+      '.dev/',
+      '_dev/',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

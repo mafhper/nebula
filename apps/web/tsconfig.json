@@ -4,5 +4,8 @@
     "composite": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "vite.config.ts"]
+  // `scripts/sonda-porta.ts` entra porque o `vite.config.ts` a importa, e um
+  // projeto `composite` precisa listar TODOS os arquivos que ele referencia
+  // (TS6307). Sem esta linha o type-check passa a reclamar da propria sonda.
+  "include": ["src", "vite.config.ts", "scripts/sonda-porta.ts"]
 }

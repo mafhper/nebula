@@ -9,7 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev -w @nebula/web -- --port 5173",
+    "dev": "npm run dev -w @nebula/web",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "lint": "eslint .",

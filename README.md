@@ -56,7 +56,7 @@ npm ci
 npm run dev
 ```
 
-The development server is available at <http://localhost:5173/nebula/>. Use `npm ci` for a clean,
+The development server is available at <http://localhost:5210/nebula/>. Use `npm ci` for a clean,
 reproducible install from `package-lock.json`; use `npm install` only when intentionally changing
 dependencies.
 
@@ -64,7 +64,7 @@ dependencies.
 
 | Command                                               | Purpose                                               |
 | ----------------------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                                         | Start the Vite development server on port 5173        |
+| `npm run dev`                                         | Start the Vite development server on port 5210        |
 | `npm run format:check`                                | Check formatting with Prettier                        |
 | `npm run lint`                                        | Run ESLint                                            |
 | `npm run type-check`                                  | Type-check every workspace                            |
