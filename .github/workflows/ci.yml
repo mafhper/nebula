@@ -56,3 +56,16 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # O NBL-N8: o turbo cacheava o build como bem-sucedido sem guardar a
+      # saida (outputs: []), entao `npm run build` reportava 8/8 e nao
+      # produzia dist/. Este passo falha o CI nesse caso, para que um build
+      # vazio nunca chegue a ser mergeado como verde.
+      - name: Assert build output
+        run: |
+          if [ ! -f apps/web/dist/index.html ]; then
+            echo "::error::npm run build terminou sem apps/web/dist/index.html."
+            echo "::error::Se o cache do turbo restaurou sem saida, verifique 'outputs' em turbo.json."
+            exit 1
+          fi
+          echo "build ok: $(find apps/web/dist -type f | wc -l) arquivos em apps/web/dist"
