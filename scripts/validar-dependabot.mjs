@@ -22,7 +22,6 @@ import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 
 const require = createRequire(import.meta.url);
-const Ajv = require('ajv');
 const { parsers } = await import('prettier/plugins/yaml.mjs');
 
 const ARQUIVO = '.github/dependabot.yml';
@@ -30,6 +29,16 @@ const SCHEMA_URL = 'https://json.schemastore.org/dependabot-2.0.json';
 // Cache em node_modules/.cache: ja ignorado e autossuficiente. Gravar fora
 // quebra em clone limpo.
 const CACHE = join('node_modules', '.cache', 'dependabot-schema.json');
+
+// ajv e devDependency declarada. Se faltar, a CI nao pode ficar vermelha por
+// isso -- e o script avisa e sai com 2, que a CI trata como aviso.
+let Ajv;
+try {
+  Ajv = require('ajv');
+} catch {
+  console.error('ERRO: "ajv" nao esta instalado. Rode: npm ci');
+  process.exit(2);
+}
 
 function cachecarSchema() {
   if (existsSync(CACHE)) return readFileSync(CACHE, 'utf8');
