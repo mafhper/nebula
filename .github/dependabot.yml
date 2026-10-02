@@ -13,10 +13,12 @@ updates:
       semver-minor-days: 7
       semver-major-days: 30
     open-pull-requests-limit: 5
-    # Rebase automatico quando a branch fica atrasada. Sem isso o PR passa a
-    # exigir "update branch" na mao e o ruleset (strict up-to-date) recusa o
-    # merge com todos os checks verdes.
-    auto-update: true
+    # Rebase automatico quando a branch fica atrasada. O ruleset e strict
+    # up-to-date, entao um PR que envelhece e recusado no merge mesmo com
+    # todos os checks verdes. 'auto' ja e o default do Dependabot; declarar
+    # aqui deixa a intencao explicita e impede que um 'disabled' futuro
+    # reintroduza o problema em silencio.
+    rebase-strategy: auto
 
   - package-ecosystem: github-actions
     directory: /
@@ -28,7 +30,7 @@ updates:
     cooldown:
       default-days: 5
     open-pull-requests-limit: 5
-    auto-update: true
+    rebase-strategy: auto
     # Agrupa TODAS as actions em um PR. Sem agrupar, o Dependabot abre um PR
     # por acao: o codeql-action/init e o codeql-action/analyze sao fixados no
     # mesmo SHA e PRECISAM subir juntos, mas cada um virava um PR separado. O
